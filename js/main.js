@@ -1,13 +1,18 @@
-import PlatformerScene from "./platformer-scene.js";
+import Menu from "./scenes/menu.js";
+import Level_1 from "./scenes/Level_1.js";
+import Level_2 from "./scenes/Level_2.js";
+import Level_3 from "./scenes/Level_3.js";
+import Credits from "./scenes/Credits.js";
+
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 896,
+  height: 448,
   parent: "game-container",
   pixelArt: true,
   backgroundColor: "#1d212d",
-  scene: PlatformerScene,
+  scene: [Menu, Level_1, Level_2, Level_3, Credits],
   physics: {
     default: "arcade",
     arcade: {

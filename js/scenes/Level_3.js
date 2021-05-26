@@ -1,10 +1,15 @@
-import Player from "./player.js";
-import MouseTileMarker from "./mouse-tile-maker.js";
+import Player from "../class/player.js";
+import MouseTileMarker from "../class/tile-maker.js";
 
 /**
  * A class that extends Phaser.Scene and wraps up the core logic for the platformer level.
  */
-export default class PlatformerScene extends Phaser.Scene {
+export default class Level_2 extends Phaser.Scene {
+  constructor()
+	{
+		super('level3')
+	}
+
   preload() {
     this.load.spritesheet(
       "player",

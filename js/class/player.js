@@ -1,13 +1,9 @@
-/**
- * A class that wraps up our 2D platforming player logic. It creates, animates and moves a sprite in
- * response to WASD/arrow keys. Call its update method from the scene's update and call its destroy
- * method when you're done with the player.
- */
+//Player Class to export in any scene that include the player acting
 export default class Player {
   constructor(scene, x, y) {
     this.scene = scene;
 
-    // Create the animations we need from the player spritesheet
+    //Animating our player
     const anims = scene.anims;
     anims.create({
       key: "player-idle",
@@ -22,7 +18,7 @@ export default class Player {
       repeat: -1
     });
 
-    // Create the physics-based sprite that we will move around and animate
+    // Base of the player's physics
     this.sprite = scene.physics.add
       .sprite(x, y, "player", 0)
       .setDrag(1000, 0)
@@ -30,32 +26,34 @@ export default class Player {
       .setSize(18, 24)
       .setOffset(7, 9);
 
-    // Track the arrow keys & WASD
-    const { LEFT, RIGHT, UP, W, A, D } = Phaser.Input.Keyboard.KeyCodes;
+    // Using arrow keys and ZQSD keys
+    const { LEFT, RIGHT, UP, DOWN, Z, Q, D, S } = Phaser.Input.Keyboard.KeyCodes;
     this.keys = scene.input.keyboard.addKeys({
       left: LEFT,
       right: RIGHT,
       up: UP,
-      w: W,
-      a: A,
+      down: DOWN,
+      z: Z,
+      q: Q,
+      s: S,
       d: D
     });
   }
 
+  //Having a function that freeze the player
   freeze() {
     this.sprite.body.moves = false;
   }
 
+  //Updating our player
   update() {
     const { keys, sprite } = this;
     const onGround = sprite.body.blocked.down;
     const acceleration = onGround ? 600 : 200;
 
     // Apply horizontal acceleration when left/a or right/d are applied
-    if (keys.left.isDown || keys.a.isDown) {
+    if (keys.left.isDown || keys.q.isDown) {
       sprite.setAccelerationX(-acceleration);
-      // No need to have a separate set of graphics for running to the left & to the right. Instead
-      // we can just mirror the sprite.
       sprite.setFlipX(true);
     } else if (keys.right.isDown || keys.d.isDown) {
       sprite.setAccelerationX(acceleration);
@@ -64,21 +62,24 @@ export default class Player {
       sprite.setAccelerationX(0);
     }
 
-    // Only allow the player to jump if they are on the ground
-    if (onGround && (keys.up.isDown || keys.w.isDown)) {
+    // Allow player to jump only if on ground
+    if (onGround && (keys.up.isDown || keys.z.isDown)) {
       sprite.setVelocityY(-500);
     }
 
-    // Update the animation/texture based on the state of the player
+    // Update the animation
     if (onGround) {
+      //Player Running if velocityX != 0 else Player Idle
       if (sprite.body.velocity.x !== 0) sprite.anims.play("player-run", true);
       else sprite.anims.play("player-idle", true);
     } else {
+      //Stopping Animation to play a Texture for the jump
       sprite.anims.stop();
       sprite.setTexture("player", 10);
     }
   }
 
+  //Creating a function to destroy player
   destroy() {
     this.sprite.destroy();
   }
