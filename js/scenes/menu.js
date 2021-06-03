@@ -7,10 +7,10 @@ export default class Menu extends Phaser.Scene {
 
     preload()
 	{
-		this.load.image('logo', 'assets/Icons/logo.png')
-        this.load.image('playbutton', 'assets/Icons/play.png')
-        this.load.image('menu', 'assets/Icons/MenuScreen.png')
-        this.load.image('commandesbutton', 'assets/Icons/gamepad.png')	
+		this.load.image('logo', '../assets/_Menu/Logo.png')
+        this.load.image('playbutton', '../assets/_Menu/play.png')
+        this.load.image('menu', '../assets/_Menu/MenuScreen.png')
+        this.load.image('options', '../assets/_Menu/options.png')	
 	}
 
     create() { //creating the menu screen
@@ -27,7 +27,7 @@ export default class Menu extends Phaser.Scene {
 
         let playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'playbutton').setDepth(1);
 
-        let commandButton = this.add.image(this.game.renderer.width -100 , this.game.renderer.height * 0.10, 'commandesbutton').setDepth(1).setScale(0.7);
+        let commandButton = this.add.image(this.game.renderer.width -100 , this.game.renderer.height * 0.10, 'options').setDepth(1).setScale(0.7);
 
         
 

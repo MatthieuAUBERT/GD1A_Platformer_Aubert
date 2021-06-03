@@ -22,7 +22,7 @@ export default class Player {
     this.sprite = scene.physics.add
       .sprite(x, y, "player", 0)
       .setDrag(1000, 0)
-      .setMaxVelocity(300, 400)
+      .setMaxVelocity(300, 600)
       .setSize(18, 24)
       .setOffset(7, 9);
 
