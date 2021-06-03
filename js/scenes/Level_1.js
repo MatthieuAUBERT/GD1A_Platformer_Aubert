@@ -11,7 +11,7 @@ export default class Level_1 extends Phaser.Scene {
       //Preloading Images, Textures and Maps
     this.load.spritesheet(
       "player",
-      "../assets/spritesheets/0x72-industrial-player-32px-extruded.png",
+      "./assets/spritesheets/0x72-industrial-player-32px-extruded.png",
       {
         frameWidth: 32,
         frameHeight: 32,
