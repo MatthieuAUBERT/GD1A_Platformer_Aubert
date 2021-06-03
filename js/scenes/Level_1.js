@@ -19,13 +19,13 @@ export default class Level_1 extends Phaser.Scene {
         spacing: 2
       }
     );
-    this.load.image("doll", "../assets/_Objects/Doll.png");
-    this.load.image("ghost", "../assets/_Objects/LittleGhost.png");
-    this.load.image("luciole", "../assets/_Objects/Luciole.png");
-    this.load.image("MobilePlat", "../assets/_Objects/PlatformMobile.png");
+    this.load.image("doll", "./assets/Objects/Doll.png");
+    this.load.image("ghost", "./assets/Objects/LittleGhost.png");
+    this.load.image("luciole", "./assets/Objects/Luciole.png");
+    this.load.image("MobilePlat", "./assets/Objects/PlatformMobile.png");
 
-    this.load.image("Tiles", "../assets/_Tiled/Tileset.png");
-    this.load.tilemapTiledJSON("Map", "../assets/_Tiled/Map.json");
+    this.load.image("Tiles", "./assets/Tiled/Tileset.png");
+    this.load.tilemapTiledJSON("Map", "./assets/Tiled/Map.json");
   }
 
   create() {

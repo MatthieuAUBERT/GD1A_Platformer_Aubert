@@ -5,10 +5,10 @@ export default class Menu extends Phaser.Scene {
 
     preload()
 	{
-		this.load.image('logo', '../assets/_Menu/Logo.png')
-        this.load.image('playbutton', '../assets/_Menu/play.png')
-        this.load.image('menu', '../assets/_Menu/MenuScreen.png')
-        this.load.image('options', '../assets/_Menu/options.png')	
+		this.load.image('logo', './assets/Menu/Logo.png')
+        this.load.image('playbutton', './assets/Menu/play.png')
+        this.load.image('menu', './assets/Menu/MenuScreen.png')
+        this.load.image('options', './assets/Menu/options.png')	
 	}
 
     create() { //creating the menu screen
