@@ -1,12 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "format":"json",
-         "target":"Map.json"
-        }
-    },
  "height":14,
  "infinite":false,
  "layers":[
@@ -192,8 +184,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1423.33333333333,
-                 "y":372.666666666667
+                 "x":1423.33,
+                 "y":372.667
                 }, 
                 {
                  "height":0,
@@ -204,7 +196,7 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":3025.33333333333,
+                 "x":3025.33,
                  "y":340
                 }],
          "opacity":1,
