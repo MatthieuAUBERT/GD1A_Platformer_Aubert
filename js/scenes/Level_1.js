@@ -19,6 +19,14 @@ export default class Level_1 extends Phaser.Scene {
         spacing: 2
       }
     );
+
+    this.load.image("textbox", "./assets/Menu/StoryTelling.png");
+
+    this.load.image("actionner", "./assets/Objects/UncleGhost.png");
+
+    this.load.image("effets", "./assets/Objects/Effects.png");
+    this.load.image("sun", "./assets/Objects/SunEffect.png");
+
     this.load.image("doll", "./assets/Objects/Doll.png");
     this.load.image("ghost", "./assets/Objects/LittleGhost.png");
     this.load.image("luciole", "./assets/Objects/Luciole.png");
@@ -26,14 +34,29 @@ export default class Level_1 extends Phaser.Scene {
 
     this.load.image("Tiles", "./assets/Tiled/Tileset.png");
     this.load.tilemapTiledJSON("Map", "./assets/Tiled/Map.json");
+
+    this.cursors = this.input.keyboard.createCursorKeys()
   }
 
   create() {
     //Setting the state of the player
     this.isPlayerDead = false;
+    this.immune = false;
+    this.spawn = true;
+    this.spawnO = true;
+    this.respawning = false;
+    this.allowexit = false;
+    this.storytelling = true;
+    this.nbClick = 0;
+
+    this.skip = this.input.keyboard.addKey('SPACE');
 
 
     //Setting the map
+
+    this.add.image(448,224,"effets").setScrollFactor(0).setDepth(1)
+    this.add.image(448,224,"sun").setScrollFactor(0.15).setDepth(1)
+    
     const Map = this.make.tilemap({ key: "Map" });
     const Tiles = Map.addTilesetImage("Tileset", "Tiles");
 
@@ -51,15 +74,63 @@ export default class Level_1 extends Phaser.Scene {
     const spawnPoint = Map.findObject("Objects", obj => obj.name === "Spawn");
     this.player = new Player(this, spawnPoint.x, spawnPoint.y);
 
+    const Actionner1 = Map.findObject("Actionners", obj => obj.name === "Actionner 1")
+    const Actionner2 = Map.findObject("Actionners", obj => obj.name === "Actionner 2")
+    this.CheckPoint = Map.findObject("Objects", obj => obj.name === "Checkpoint")
+    const Finish = Map.findObject("Objects", obj => obj.name === "Finish")
+
+    this.actionnerI = this.physics.add.group({allowGravity: false,immovable: true})
+    this.actionnerII = this.physics.add.group({allowGravity: false,immovable: true})
+
+    this.actionnerI.create(Actionner1.x, Actionner1.y, 'actionner').setDepth(0).setVisible(false);
+    this.actionnerII.create(Actionner2.x, Actionner2.y, 'actionner').setDepth(0).setVisible(false);
+
+    this.physics.add.overlap(this.player.sprite, this.actionnerI, this.spawn1, null,this);
+    this.physics.add.overlap(this.player.sprite, this.actionnerII, this.spawn2, null,this);
+
+
+    this.checkpoint = this.physics.add.group({allowGravity: false,immovable: true})
+    this.end = this.physics.add.group({allowGravity: false,immovable: true})
+
+    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y, 'actionner').setDepth(0).setVisible(false);
+    this.end.create(Finish.x, Finish.y, 'actionner').setDepth(0).setVisible(false);
+
+    this.physics.add.overlap(this.player.sprite, this.checkpoint, this.respawn, null,this);
+    this.physics.add.overlap(this.player.sprite, this.end, this.finishing, null,this);
+
+
     // Collide the player with Tiled Layers
     this.groundLayer.setCollisionByProperty({ collides: true });
     this.physics.world.addCollider(this.player.sprite, this.groundLayer);
 
 
-    // Spawning the ennemies and define their IA
+    // Spawning the ennemies and define their behaviour
 
-    this.ghost = this.physics.add.group();
-    this.doll = this.physics.add.group();
+    this.ghostI = this.physics.add.group({allowGravity: false,immovable: true});
+    this.ghostII = this.physics.add.group({allowGravity: false,immovable: true});
+    this.ghostIII = this.physics.add.group({allowGravity: false,immovable: true});
+    this.doll = this.physics.add.group({allowGravity: false,immovable: true});
+    this.doll2 = this.physics.add.group({allowGravity: false,immovable: true});
+
+    const ghost1 = Map.findObject("Objects", obj => obj.name === "Monstre 1");
+    const ghost2 = Map.findObject("Objects", obj => obj.name === "Monstre 2");
+    const ghost3 = Map.findObject("Objects", obj => obj.name === "Monstre 3");
+
+    this.ghostI.create(ghost1.x + 80, ghost1.y - 10, 'ghost').setDepth(0);
+    this.ghostII.create(ghost2.x + 80, ghost2.y - 10, 'ghost').setDepth(0);
+    this.ghostIII.create(ghost3.x + 80, ghost3.y - 10, 'ghost').setDepth(0);
+
+    this.physics.add.overlap(this.player.sprite, this.ghostI, this.hit, null,this);
+    this.physics.add.overlap(this.player.sprite, this.ghostII, this.hit, null,this);
+    this.physics.add.overlap(this.player.sprite, this.ghostIII, this.hit, null,this);
+
+
+    this.dollsp = Map.findObject("Objects", obj => obj.name === "Vague Monstre 1");
+    this.dollsp2 = Map.findObject("Objects", obj => obj.name === "Vague Monstre 2");
+
+
+    this.physics.add.overlap(this.player.sprite, this.doll, this.hit, null,this);
+    this.physics.add.overlap(this.player.sprite, this.doll2, this.hit, null,this);
 
     // Colliding them with player and others
 
@@ -116,6 +187,12 @@ export default class Level_1 extends Phaser.Scene {
     this.physics.add.collider(this.player.sprite, this.platform1);
     this.physics.add.collider(this.player.sprite, this.platform2);
 
+    this.magicgloves = this.physics.add.group({allowGravity: false,immovable: true});
+
+    this.magicgloves.create(this.dollsp.x + 100, this.dollsp.y, 'MAGIC').setDepth(0);
+
+    this.physics.add.overlap(this.player.sprite,this.magicgloves,this.allow,null,this)
+
 
 
     var test = this;
@@ -141,6 +218,40 @@ export default class Level_1 extends Phaser.Scene {
 				loop: -1
 			});
 		})
+
+    this.ghostI.children.iterate(function (child) {
+			test.tweens.add({
+				targets: child,
+				x: child.x-172,
+				duration: 3000,
+        flipX : true,
+				yoyo: true,
+				loop: -1
+			});
+		})
+
+    this.ghostII.children.iterate(function (child) {
+			test.tweens.add({
+				targets: child,
+				x: child.x-172,
+				duration: 3000,
+        flipX : true,
+				yoyo: true,
+				loop: -1
+			});
+		})
+
+    this.ghostIII.children.iterate(function (child) {
+			test.tweens.add({
+				targets: child,
+				x: child.x-172,
+				duration: 3000,
+        flipX : true,
+				yoyo: true,
+				loop: -1
+			});
+		})
+
     //Setting the camera
     this.cameras.main.startFollow(this.player.sprite);
     this.cameras.main.setBounds(0, 0, Map.widthInPixels, Map.heightInPixels);
@@ -155,12 +266,63 @@ export default class Level_1 extends Phaser.Scene {
         padding: { x: 20, y: 10 },
       })
       .setScrollFactor(0);
+
+    this.textbox = this.add.image(448,224,'textbox').setDepth(2).setScrollFactor(0)
+
+    this.text;
+    this.text = this.add.text(380,380,'', { fontSize: 20 }).setDepth(3);
+
+    this.textH = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3);
+    
   }
 
   update(time, delta) {
     if (this.isPlayerDead) return;
 
     this.player.update();
+
+    this.immune = false
+    if (this.cursors.down.isDown)
+		{
+			this.immune = true;
+      this.player.sprite.setVelocity(0);
+		}
+
+    if(this.storytelling){
+      this.physics.pause()
+
+      if(Phaser.Input.Keyboard.JustDown(this.skip)){
+
+        if(this.nbClick == 0){
+        
+          this.text.setText('Where am I ? ')
+
+          this.nbClick += 1;
+        }
+        
+
+        else if (this.nbClick == 1){
+
+          this.text.setText('Is that ... a dream ?')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 2){
+          this.text.destroy()
+          this.textH.destroy()
+          this.textbox.destroy();
+
+          this.physics.resume()          
+          this.storytelling = false;
+
+          }
+
+      };
+     
+    }
+    
 
     if (
       this.player.sprite.y > this.groundLayer.height) 
@@ -170,16 +332,27 @@ export default class Level_1 extends Phaser.Scene {
 
       const cam = this.cameras.main;
       cam.shake(100, 0.05);
-      cam.fade(250, 0, 0, 0);
 
-      // Freeze the player
-      this.player.freeze();
 
       // Add an effect on death
-      cam.once("camerafadeoutcomplete", () => {
-        this.player.destroy();
-        this.scene.restart();
+      if(this.respawning){
+        this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
+        this.isPlayerDead = false;
+      }
+      
+      else{
+
+        cam.fade(250, 0, 0, 0);
+
+        // Freeze the player
+        this.player.freeze();
+
+        cam.once("camerafadeoutcomplete", () => {
+          this.player.destroy();
+          this.scene.restart();
+        
       });
+      }
     }
   }
 
@@ -187,5 +360,95 @@ export default class Level_1 extends Phaser.Scene {
     luciole.disableBody(true,true);
     this.score += 100;
     this.scoreText.setText('Score : ' + this.score);
+  }
+
+  hit(player,ennemy){
+    if (!this.immune){
+      this.isPlayerDead = true;
+
+      const cam = this.cameras.main;
+      cam.shake(100, 0.05);
+
+
+      // Add an effect on death
+      if(this.respawning){
+        this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
+        this.isPlayerDead = false;
+      }
+      
+      else{
+
+        cam.fade(250, 0, 0, 0);
+
+        // Freeze the player
+        this.player.freeze();
+
+        cam.once("camerafadeoutcomplete", () => {
+          this.player.destroy();
+          this.scene.restart();
+        
+      });
+      }
+    }
+  }
+
+  spawn1(player){
+
+    if (this.spawn){
+
+      this.doll.create(this.dollsp.x, this.dollsp.y, 'doll').setDepth(0).setFlipX(true);
+
+      this.doll.setVelocityX(350)
+
+      this.spawn = false
+
+    }
+
+
+  }
+
+  spawn2(player){
+
+    if(this.spawnO){
+    
+    this.doll2.create(this.dollsp2.x, this.dollsp2.y, 'doll').setDepth(0);
+
+    this.doll2.setVelocityX(-150)
+
+    this.spawnO = false
+
+    }
+
+  }
+
+  respawn(player){
+
+    this.respawning = true;
+
+  }
+
+  finishing(player){
+
+    if(this.allowexit){
+
+      const cam = this.cameras.main;
+
+      cam.fade(250, 0, 0, 0);
+
+      // Freeze the player
+      this.player.freeze();
+
+      cam.once("camerafadeoutcomplete", () => {
+        this.player.destroy();
+        this.scene.start('level2');
+      
+    });
+    }
+
+  }
+  
+  allow(player,item){
+    item.destroy();
+    this.allowexit = true;
   }
 }
