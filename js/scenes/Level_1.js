@@ -439,6 +439,7 @@ export default class Level_1 extends Phaser.Scene {
       this.player.freeze();
 
       cam.once("camerafadeoutcomplete", () => {
+        this.isPlayerDead = true;
         this.player.destroy();
         this.scene.start('level2');
       
