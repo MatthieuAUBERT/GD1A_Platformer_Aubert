@@ -35,7 +35,7 @@ export default class Level_2 extends Phaser.Scene {
     map.createDynamicLayer("Foreground", tiles);
 
     // Instantiate a player instance at the location of the "Spawn Point" object in the Tiled map
-    const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+    const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn");
     this.player = new Player(this, spawnPoint.x, spawnPoint.y);
 
     // Collide the player against the ground layer - here we are grabbing the sprite property from

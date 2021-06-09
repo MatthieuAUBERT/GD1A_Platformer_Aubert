@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="95" height="14" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="18">
+ <editorsettings>
+  <export target="Level2.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" name="Tileset2" tilewidth="32" tileheight="32" tilecount="180" columns="18">
   <image source="Tileset2.png" width="576" height="320"/>
   <tile id="0">
@@ -193,7 +196,7 @@
 </data>
  </layer>
  <objectgroup id="4" name="Objects">
-  <object id="1" name="Spawn Point" x="32" y="212">
+  <object id="1" name="Spawn" x="32" y="212">
    <point/>
   </object>
   <object id="2" name="Spawn Monstre" x="1471" y="251">
