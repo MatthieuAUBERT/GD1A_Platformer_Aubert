@@ -13,7 +13,7 @@ export default class Credits extends Phaser.Scene {
         this.load.image('commandesbutton', 'assets/Icons/gamepad.png')	
 	}
 
-    create() { //creating the menu screen
+    create() {  //creating the menu screen
 
         //create images (z order)
 
