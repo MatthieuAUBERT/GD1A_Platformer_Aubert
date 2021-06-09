@@ -11,12 +11,12 @@ export default class Level_1 extends Phaser.Scene {
       //Preloading Images, Textures and Maps
     this.load.spritesheet(
       "player",
-      "./assets/spritesheets/0x72-industrial-player-32px-extruded.png",
+      "./assets/Spritesheet/Edna_SpriteSheet.png",
       {
         frameWidth: 32,
-        frameHeight: 32,
-        margin: 1,
-        spacing: 2
+        frameHeight: 32
+        //margin: 1,
+        //spacing: 2
       }
     );
 
@@ -132,9 +132,8 @@ export default class Level_1 extends Phaser.Scene {
     this.physics.add.overlap(this.player.sprite, this.doll, this.hit, null,this);
     this.physics.add.overlap(this.player.sprite, this.doll2, this.hit, null,this);
 
-    // Colliding them with player and others
 
-    //Creating others elements and colling them if needed
+    //Creating others elements and colliding them if needed
 
     this.luciole = this.physics.add.group({
       immovable: true,
@@ -193,7 +192,7 @@ export default class Level_1 extends Phaser.Scene {
 
     this.physics.add.overlap(this.player.sprite,this.magicgloves,this.allow,null,this)
 
-
+    //Creating some tweens for simple ennemies
 
     var test = this;
 
@@ -256,7 +255,7 @@ export default class Level_1 extends Phaser.Scene {
     this.cameras.main.startFollow(this.player.sprite);
     this.cameras.main.setBounds(0, 0, Map.widthInPixels, Map.heightInPixels);
 
-    // Help text
+    // Texte
     this.score = 0;
     this.scoreText;
 
@@ -280,14 +279,17 @@ export default class Level_1 extends Phaser.Scene {
     if (this.isPlayerDead) return;
 
     this.player.update();
-
+    
+    //Setting the USP "Crouch to be invincible"
     this.immune = false
-    if (this.cursors.down.isDown)
+    if (this.cursors.down.isDown && this.player.sprite.body.blocked.down)
 		{
 			this.immune = true;
       this.player.sprite.setVelocity(0);
+      this.player.sprite.anims.play("player-crouch", true)
 		}
 
+    //Some simple storytelling in-game
     if(this.storytelling){
       this.physics.pause()
 
@@ -323,7 +325,7 @@ export default class Level_1 extends Phaser.Scene {
      
     }
     
-
+    //What the game should do if game's over
     if (
       this.player.sprite.y > this.groundLayer.height) 
     {
@@ -336,6 +338,8 @@ export default class Level_1 extends Phaser.Scene {
 
       // Add an effect on death
       if(this.respawning){
+        this.score -= 200;
+        this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
         this.isPlayerDead = false;
       }
@@ -355,13 +359,13 @@ export default class Level_1 extends Phaser.Scene {
       }
     }
   }
-
+  //Setting an easy scoring text
   ScoreUp(player,luciole){
     luciole.disableBody(true,true);
     this.score += 100;
     this.scoreText.setText('Score : ' + this.score);
   }
-
+  //What the game should do if player collides with an ennemy
   hit(player,ennemy){
     if (!this.immune){
       this.isPlayerDead = true;
@@ -372,6 +376,8 @@ export default class Level_1 extends Phaser.Scene {
 
       // Add an effect on death
       if(this.respawning){
+        this.score -= 200;
+        this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
         this.isPlayerDead = false;
       }
@@ -391,7 +397,7 @@ export default class Level_1 extends Phaser.Scene {
       }
     }
   }
-
+  //Trigger events
   spawn1(player){
 
     if (this.spawn){
@@ -420,13 +426,13 @@ export default class Level_1 extends Phaser.Scene {
     }
 
   }
-
+  //Checkpoint
   respawn(player){
 
     this.respawning = true;
 
   }
-
+  //End of the level
   finishing(player){
 
     if(this.allowexit){
@@ -447,7 +453,7 @@ export default class Level_1 extends Phaser.Scene {
     }
 
   }
-  
+  // Item to finish the level
   allow(player,item){
     item.destroy();
     this.allowexit = true;

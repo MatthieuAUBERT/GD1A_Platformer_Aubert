@@ -6,15 +6,19 @@ export default class Player {
     //Animating our player
     const anims = scene.anims;
     anims.create({
-      key: "player-idle",
-      frames: anims.generateFrameNumbers("player", { start: 0, end: 3 }),
-      frameRate: 3,
-      repeat: -1
+      key: 'player-idle',
+			frames: [ { key: 'player', frame: 0 } ],
+			frameRate: 10
+    });
+    anims.create({
+      key: 'player-crouch',
+			frames: [ { key: 'player', frame: 18 } ],
+			frameRate: 10
     });
     anims.create({
       key: "player-run",
-      frames: anims.generateFrameNumbers("player", { start: 8, end: 15 }),
-      frameRate: 12,
+      frames: anims.generateFrameNumbers("player", { start: 1, end: 8 }),
+      frameRate: 10,
       repeat: -1
     });
 
