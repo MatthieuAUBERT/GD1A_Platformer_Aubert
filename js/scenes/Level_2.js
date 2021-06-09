@@ -19,9 +19,9 @@ export default class Level_2 extends Phaser.Scene {
         frameHeight: 32,
       }
     );
-    this.load.image("spike", "../assets/TiledLvl2/spike.png");
-    this.load.image("tiles", "../assets/TiledLvl2/Tileset2.png");
-    this.load.tilemapTiledJSON("map", "../assets/TiledLvl2/Level2.json");
+    this.load.image("spike", "./assets/TiledLvl2/spike.png");
+    this.load.image("tiles", "./assets/TiledLvl2/Tileset2.png");
+    this.load.tilemapTiledJSON("map", "./assets/TiledLvl2/Level2.json");
   }
 
   create() {
