@@ -30,9 +30,9 @@ export default class Level_2 extends Phaser.Scene {
     const map = this.make.tilemap({ key: "map" });
     const tiles = map.addTilesetImage("Tileset2", "tiles");
 
-    map.createDynamicLayer("Background", tiles);
-    this.groundLayer = map.createDynamicLayer("Ground", tiles);
-    map.createDynamicLayer("Foreground", tiles);
+    map.createDynamicLayer("Layer 1", tiles).setDepth(-1);
+    this.groundLayer = map.createDynamicLayer("Layer 2", tiles).setDepth(0);
+    map.createDynamicLayer("Layer 3", tiles).setDepth(1);
 
     // Instantiate a player instance at the location of the "Spawn Point" object in the Tiled map
     const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn");
