@@ -2,7 +2,7 @@ import Menu from "./scenes/menu.js";
 import Level_1 from "./scenes/Level_1.js";
 import Level_2 from "./scenes/Level_2.js";
 import Level_3 from "./scenes/Level_3.js";
-import Credits from "./scenes/Credits.js";
+import Credits from "./scenes/credits.js";
 
 
 const config = {

@@ -1,4 +1,4 @@
-export default class Menu extends Phaser.Scene {
+export default class Credits extends Phaser.Scene {
     constructor() {
         super('credits')
     }

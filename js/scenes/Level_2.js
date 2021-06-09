@@ -19,16 +19,16 @@ export default class Level_2 extends Phaser.Scene {
         frameHeight: 32,
       }
     );
-    this.load.image("spike", "../assets/images/0x72-industrial-spike.png");
-    this.load.image("tiles", "../assets/tilesets/0x72-industrial-tileset-32px-extruded.png");
-    this.load.tilemapTiledJSON("map", "../assets/tilemaps/platformer.json");
+    this.load.image("spike", "../assets/TiledLvl2/spike.png");
+    this.load.image("tiles", "../assets/TiledLvl2/Tileset2.png");
+    this.load.tilemapTiledJSON("map", "../assets/TiledLvl2/Level2.json");
   }
 
   create() {
     this.isPlayerDead = false;
 
     const map = this.make.tilemap({ key: "map" });
-    const tiles = map.addTilesetImage("0x72-industrial-tileset-32px-extruded", "tiles");
+    const tiles = map.addTilesetImage("Tileset2", "tiles");
 
     map.createDynamicLayer("Background", tiles);
     this.groundLayer = map.createDynamicLayer("Ground", tiles);
@@ -49,7 +49,7 @@ export default class Level_2 extends Phaser.Scene {
     // so that we give them a more fitting hitbox.
     this.spikeGroup = this.physics.add.staticGroup();
     this.groundLayer.forEachTile(tile => {
-      if (tile.index === 6) {
+      if (tile.index === 7) {
         const spike = this.spikeGroup.create(tile.getCenterX(), tile.getCenterY(), "spike");
 
         // The map has spikes rotated in Tiled (z key), so parse out that angle to the correct body
@@ -89,7 +89,7 @@ export default class Level_2 extends Phaser.Scene {
     const pointer = this.input.activePointer;
     const worldPoint = pointer.positionToCamera(this.cameras.main);
     if (pointer.isDown) {
-      const tile = this.groundLayer.putTileAtWorldXY(5, worldPoint.x, worldPoint.y);
+      const tile = this.groundLayer.putTileAtWorldXY(6, worldPoint.x, worldPoint.y);
       tile.setCollision(true);
     }
 
