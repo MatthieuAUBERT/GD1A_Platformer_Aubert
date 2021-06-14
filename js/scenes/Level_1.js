@@ -36,6 +36,8 @@ export default class Level_1 extends Phaser.Scene {
     this.load.tilemapTiledJSON("Map", "./assets/Tiled/Map.json");
 
     this.cursors = this.input.keyboard.createCursorKeys()
+
+    this.load.audio('Musique', './assets/Audio/Level_1.ogg');
   }
 
   create() {
@@ -48,6 +50,9 @@ export default class Level_1 extends Phaser.Scene {
     this.allowexit = false;
     this.storytelling = true;
     this.nbClick = 0;
+    this.nbClickF = 0;
+    this.storyF = false;
+    this.teststory = true;
 
     this.skip = this.input.keyboard.addKey('SPACE');
 
@@ -255,6 +260,12 @@ export default class Level_1 extends Phaser.Scene {
     this.cameras.main.startFollow(this.player.sprite);
     this.cameras.main.setBounds(0, 0, Map.widthInPixels, Map.heightInPixels);
 
+    //Setting the audio
+
+    this.musique;
+
+    this.musique = this.sound.add('Musique')
+
     // Texte
     this.score = 0;
     this.scoreText;
@@ -269,9 +280,9 @@ export default class Level_1 extends Phaser.Scene {
     this.textbox = this.add.image(448,224,'textbox').setDepth(2).setScrollFactor(0)
 
     this.text;
-    this.text = this.add.text(380,380,'', { fontSize: 20 }).setDepth(3);
+    this.text = this.add.text(370,380,'', { fontSize: 16 }).setDepth(3).setScrollFactor(0);
 
-    this.textH = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3);
+    this.textH = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3).setScrollFactor(0);
     
   }
 
@@ -279,7 +290,6 @@ export default class Level_1 extends Phaser.Scene {
     if (this.isPlayerDead) return;
 
     this.player.update();
-    
     //Setting the USP "Crouch to be invincible"
     this.immune = false
     if (this.cursors.down.isDown && this.player.sprite.body.blocked.down)
@@ -292,12 +302,13 @@ export default class Level_1 extends Phaser.Scene {
     //Some simple storytelling in-game
     if(this.storytelling){
       this.physics.pause()
+      this.musique.play({volume : 0.5, loop: true});
 
       if(Phaser.Input.Keyboard.JustDown(this.skip)){
 
         if(this.nbClick == 0){
         
-          this.text.setText('Where am I ? ')
+          this.text.setText('Where am I ?')
 
           this.nbClick += 1;
         }
@@ -312,12 +323,83 @@ export default class Level_1 extends Phaser.Scene {
         }
 
         else if (this.nbClick == 2){
-          this.text.destroy()
-          this.textH.destroy()
-          this.textbox.destroy();
+
+          this.text.setText('Is that because of the other day...when I make it')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 3){
+
+          this.text.setText('...')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 4){
+
+          this.text.setText('I must face it this time... I will not fear.')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 5){
+
+          this.text.setText('...')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 6){
+          this.text.setVisible(false);
+          this.textH.setVisible(false);
+          this.textbox.setVisible(false);
 
           this.physics.resume()          
           this.storytelling = false;
+
+          }
+
+      };
+     
+    }
+
+    if(this.storyF){
+    
+      this.physics.pause()
+      this.text.setVisible(true);
+      this.textH.setVisible(true);
+      this.textbox.setVisible(true);
+
+      if(Phaser.Input.Keyboard.JustDown(this.skip)){
+
+        if(this.nbClickF == 0){
+        
+          this.text.setText('It seems I forgot something...')
+
+          this.nbClickF += 1;
+        }
+        
+
+        else if (this.nbClickF == 1){
+
+          this.text.setText('Is that the gloves I saw ?')
+
+
+          this.nbClickF += 1;
+        }
+
+        else if (this.nbClickF == 2){
+          this.text.setVisible(false);
+          this.textH.setVisible(false);
+          this.textbox.setVisible(false);
+
+          this.physics.resume()          
+          this.storyF = false;
 
           }
 
@@ -352,6 +434,7 @@ export default class Level_1 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
+          this.musique.stop(); 
           this.player.destroy();
           this.scene.restart();
         
@@ -390,6 +473,7 @@ export default class Level_1 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
+          this.musique.stop(); 
           this.player.destroy();
           this.scene.restart();
         
@@ -450,6 +534,13 @@ export default class Level_1 extends Phaser.Scene {
         this.scene.start('level2');
       
     });
+    }
+
+    else{
+      if (this.teststory){
+        this.storyF = true;
+        this.teststory = false;
+      }
     }
 
   }

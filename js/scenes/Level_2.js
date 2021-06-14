@@ -133,7 +133,7 @@ export default class Level_2 extends Phaser.Scene {
         fill: "#ffffff",
         padding: { x: 20, y: 10 },
       })
-      .setScrollFactor(0);
+      .setScrollFactor(0).setDepth(3);
   }
 
   update(time, delta) {
