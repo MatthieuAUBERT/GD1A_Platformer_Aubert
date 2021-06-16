@@ -15,13 +15,13 @@ export default class Menu extends Phaser.Scene {
 
         //create images (z order)
 
-        this.add.image(this.game.renderer.width / 2 , this.game.renderer.height / 4, 'logo').setDepth(1);
+        this.add.image(this.game.renderer.width / 2 , this.game.renderer.height / 4 + 20 , 'logo').setDepth(1);
 
         this.add.image(0, 0, 'menu').setOrigin(0).setDepth(0);
 
-        let playButton = this.add.image(this.game.renderer.width / 2 - 150 , this.game.renderer.height / 2 + 10 , 'playbutton').setDepth(1);
+        let playButton = this.add.image(this.game.renderer.width / 2 - 150 , this.game.renderer.height / 2 + 100 , 'playbutton').setDepth(1);
 
-        let commandButton = this.add.image(this.game.renderer.width /2 + 150 , this.game.renderer.height /2 + 10, 'options').setDepth(1);
+        let commandButton = this.add.image(this.game.renderer.width /2 + 150 , this.game.renderer.height /2 + 100, 'options').setDepth(1);
 
         
 

@@ -75,7 +75,7 @@ export default class Level_1 extends Phaser.Scene {
     this.groundLayer = Map.createDynamicLayer("Ground", Tiles);
     
 
-    // Using Spawn Point to get an easy way to spawn player
+    // Using Spawn Point to get an easy way to spawn player and objects
     const spawnPoint = Map.findObject("Objects", obj => obj.name === "Spawn");
     this.player = new Player(this, spawnPoint.x, spawnPoint.y);
 
@@ -266,7 +266,7 @@ export default class Level_1 extends Phaser.Scene {
 
     this.musique = this.sound.add('Musique')
 
-    // Texte
+    // Text for player's score or storytelling
     this.score = 0;
     this.scoreText;
 
@@ -290,6 +290,7 @@ export default class Level_1 extends Phaser.Scene {
     if (this.isPlayerDead) return;
 
     this.player.update();
+    
     //Setting the USP "Crouch to be invincible"
     this.immune = false
     if (this.cursors.down.isDown && this.player.sprite.body.blocked.down)
@@ -300,9 +301,12 @@ export default class Level_1 extends Phaser.Scene {
 		}
 
     //Some simple storytelling in-game
+
     if(this.storytelling){
+      this.musique.play({volume : 0.1, loop: true});
       this.physics.pause()
-      this.musique.play({volume : 0.5, loop: true});
+      
+      
 
       if(Phaser.Input.Keyboard.JustDown(this.skip)){
 
@@ -324,7 +328,7 @@ export default class Level_1 extends Phaser.Scene {
 
         else if (this.nbClick == 2){
 
-          this.text.setText('Is that because of the other day...when I make it')
+          this.text.setText('Is that because of the other day...when I made it')
 
 
           this.nbClick += 1;
@@ -348,7 +352,7 @@ export default class Level_1 extends Phaser.Scene {
 
         else if (this.nbClick == 5){
 
-          this.text.setText('...')
+          this.text.setText('(Use Arrows to move and Down to protect)')
 
 
           this.nbClick += 1;
@@ -356,6 +360,7 @@ export default class Level_1 extends Phaser.Scene {
 
         else if (this.nbClick == 6){
           this.text.setVisible(false);
+          this.text.setText('...')
           this.textH.setVisible(false);
           this.textbox.setVisible(false);
 
@@ -481,7 +486,7 @@ export default class Level_1 extends Phaser.Scene {
       }
     }
   }
-  //Trigger events
+  //Trigger event 1 (Spawn a doll)
   spawn1(player){
 
     if (this.spawn){
@@ -496,7 +501,7 @@ export default class Level_1 extends Phaser.Scene {
 
 
   }
-
+  //Trigger event 2 (Spawn a doll)
   spawn2(player){
 
     if(this.spawnO){
@@ -530,6 +535,7 @@ export default class Level_1 extends Phaser.Scene {
 
       cam.once("camerafadeoutcomplete", () => {
         this.isPlayerDead = true;
+        this.musique.stop();
         this.player.destroy();
         this.scene.start('level2');
       

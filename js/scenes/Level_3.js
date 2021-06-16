@@ -1,119 +1,320 @@
 import Player from "../class/player.js";
-import MouseTileMarker from "../class/tile-maker.js";
 
-/**
- * A class that extends Phaser.Scene and wraps up the core logic for the platformer level.
- */
-export default class Level_2 extends Phaser.Scene {
+//First Level including : Text Printing Word by Word / Simple Platformer / Invincibility Power / Key to unlock the next level / 2 different ennemies / Tiled Map
+export default class Level_3 extends Phaser.Scene {
   constructor()
 	{
 		super('level3')
 	}
 
   preload() {
+      //Preloading Images, Textures and Maps
     this.load.spritesheet(
       "player",
-      "../assets/spritesheets/0x72-industrial-player-32px-extruded.png",
+      "./assets/Spritesheet/Edna_SpriteSheet.png",
       {
         frameWidth: 32,
-        frameHeight: 32,
-        margin: 1,
-        spacing: 2
+        frameHeight: 32
+        //margin: 1,
+        //spacing: 2
       }
     );
-    this.load.image("spike", "../assets/images/0x72-industrial-spike.png");
-    this.load.image("tiles", "../assets/tilesets/0x72-industrial-tileset-32px-extruded.png");
-    this.load.tilemapTiledJSON("map", "../assets/tilemaps/platformer.json");
+
+    this.load.image("textbox", "./assets/Menu/StoryTelling.png");
+
+    this.load.image("actionner", "./assets/Objects/UncleGhost.png");
+
+    this.load.image("luciole", "./assets/Objects/Luciole.png");
+
+    this.load.image("Tuiles", "./assets/TiledLvl3/Tileset3.png");
+    this.load.tilemapTiledJSON("Boss", "./assets/TiledLvl3/Map3.json");
+
+    this.cursors = this.input.keyboard.createCursorKeys()
+
   }
 
   create() {
+    //Setting the state of the player
     this.isPlayerDead = false;
+    this.immune = false;
+    this.respawning = false;
+    this.storytelling = true;
+    this.nbClick = 0;
+    this.nbClickF = 0;
+    this.storyF = false;
+    this.teststory = true;
 
-    const map = this.make.tilemap({ key: "map" });
-    const tiles = map.addTilesetImage("0x72-industrial-tileset-32px-extruded", "tiles");
+    this.skip = this.input.keyboard.addKey('SPACE');
 
-    map.createDynamicLayer("Background", tiles);
-    this.groundLayer = map.createDynamicLayer("Ground", tiles);
-    map.createDynamicLayer("Foreground", tiles);
 
-    // Instantiate a player instance at the location of the "Spawn Point" object in the Tiled map
-    const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point");
+    //Setting the map
+
+    
+    const Map = this.make.tilemap({ key: "Boss" });
+    const Tiles = Map.addTilesetImage("Tileset3", "Tuiles");
+
+
+    this.groundLayer = Map.createDynamicLayer("Ground", Tiles);
+    
+
+    // Using Spawn Point to get an easy way to spawn player
+    const spawnPoint = Map.findObject("Objects", obj => obj.name === "Spawn");
     this.player = new Player(this, spawnPoint.x, spawnPoint.y);
 
-    // Collide the player against the ground layer - here we are grabbing the sprite property from
-    // the player (since the Player class is not a Phaser.Sprite).
-    this.groundLayer.setCollisionByProperty({ collides: true });
-    this.physics.world.addCollider(this.player.sprite, this.groundLayer);
-
-    // The map contains a row of spikes. The spike only take a small sliver of the tile graphic, so
-    // if we let arcade physics treat the spikes as colliding, the player will collide while the
-    // sprite is hovering over the spikes. We'll remove the spike tiles and turn them into sprites
-    // so that we give them a more fitting hitbox.
-    this.spikeGroup = this.physics.add.staticGroup();
-    this.groundLayer.forEachTile(tile => {
-      if (tile.index === 77) {
-        const spike = this.spikeGroup.create(tile.getCenterX(), tile.getCenterY(), "spike");
-
-        // The map has spikes rotated in Tiled (z key), so parse out that angle to the correct body
-        // placement
-        spike.rotation = tile.rotation;
-        if (spike.angle === 0) spike.body.setSize(32, 6).setOffset(0, 26);
-        else if (spike.angle === -90) spike.body.setSize(6, 32).setOffset(26, 0);
-        else if (spike.angle === 90) spike.body.setSize(6, 32).setOffset(0, 0);
-
-        this.groundLayer.removeTileAt(tile.x, tile.y);
-      }
-    });
-
+    //Setting the camera
     this.cameras.main.startFollow(this.player.sprite);
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.cameras.main.setBounds(0, 0, Map.widthInPixels, Map.heightInPixels);
 
-    this.marker = new MouseTileMarker(this, map);
+    //Setting the audio
 
-    // Help text that has a "fixed" position on the screen
-    this.add
-      .text(16, 16, "Arrow/WASD to move & jump\nLeft click to draw platforms", {
+    //this.musique;
+
+    //this.musique = this.sound.add('Musique')
+
+    // Texte
+    this.score = 0;
+    this.scoreText;
+
+    this.scoreText = this.add.text(16, 16, "Score : 0", {
         font: "18px monospace",
-        fill: "#000000",
+        fill: "#ffffff",
         padding: { x: 20, y: 10 },
-        backgroundColor: "#ffffff"
       })
       .setScrollFactor(0);
+
+    this.textbox = this.add.image(448,224,'textbox').setDepth(2).setScrollFactor(0)
+
+    this.text;
+    this.text = this.add.text(370,380,'', { fontSize: 16 }).setDepth(3).setScrollFactor(0);
+
+    this.textH = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3).setScrollFactor(0);
+    
   }
 
   update(time, delta) {
     if (this.isPlayerDead) return;
 
-    this.marker.update();
     this.player.update();
+    
+    //Setting the USP "Crouch to be invincible"
+    this.immune = false
+    if (this.cursors.down.isDown && this.player.sprite.body.blocked.down)
+		{
+			this.immune = true;
+      this.player.sprite.setVelocity(0);
+      this.player.sprite.anims.play("player-crouch", true)
+		}
 
-    // Add a colliding tile at the mouse position
-    const pointer = this.input.activePointer;
-    const worldPoint = pointer.positionToCamera(this.cameras.main);
-    if (pointer.isDown) {
-      const tile = this.groundLayer.putTileAtWorldXY(6, worldPoint.x, worldPoint.y);
-      tile.setCollision(true);
+    //Some simple storytelling in-game
+
+    if(this.storytelling){
+      //this.musique.play({volume : 0.1, loop: true});
+      this.physics.pause()
+      
+      
+
+      if(Phaser.Input.Keyboard.JustDown(this.skip)){
+
+        if(this.nbClick == 0){
+        
+          this.text.setText('Where am I ?')
+
+          this.nbClick += 1;
+        }
+        
+
+        else if (this.nbClick == 1){
+
+          this.text.setText('Is that ... a dream ?')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 2){
+
+          this.text.setText('Is that because of the other day...when I made it')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 3){
+
+          this.text.setText('...')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 4){
+
+          this.text.setText('I must face it this time... I will not fear.')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 5){
+
+          this.text.setText('(Use Arrows to move and Down to protect)')
+
+
+          this.nbClick += 1;
+        }
+
+        else if (this.nbClick == 6){
+          this.text.setVisible(false);
+          this.text.setText('...')
+          this.textH.setVisible(false);
+          this.textbox.setVisible(false);
+
+          this.physics.resume()          
+          this.storytelling = false;
+
+          }
+
+      };
+     
     }
 
+    if(this.storyF){
+    
+      this.physics.pause()
+      this.text.setVisible(true);
+      this.textH.setVisible(true);
+      this.textbox.setVisible(true);
+
+      if(Phaser.Input.Keyboard.JustDown(this.skip)){
+
+        if(this.nbClickF == 0){
+        
+          this.text.setText('It seems I forgot something...')
+
+          this.nbClickF += 1;
+        }
+        
+
+        else if (this.nbClickF == 1){
+
+          this.text.setText('Is that the gloves I saw ?')
+
+
+          this.nbClickF += 1;
+        }
+
+        else if (this.nbClickF == 2){
+          this.text.setVisible(false);
+          this.textH.setVisible(false);
+          this.textbox.setVisible(false);
+
+          this.physics.resume()          
+          this.storyF = false;
+
+          }
+
+      };
+     
+    }
+    
+    //What the game should do if game's over
     if (
-      this.player.sprite.y > this.groundLayer.height ||
-      this.physics.world.overlap(this.player.sprite, this.spikeGroup)
-    ) {
-      // Flag that the player is dead so that we can stop update from running in the future
+      this.player.sprite.y > this.groundLayer.height) 
+    {
+      // Flag that the player is dead
       this.isPlayerDead = true;
 
       const cam = this.cameras.main;
       cam.shake(100, 0.05);
+
+
+      // Add an effect on death
+      if(this.respawning){
+        this.score -= 200;
+        this.scoreText.setText('Score : ' + this.score);
+        this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
+        this.isPlayerDead = false;
+      }
+      
+      else{
+
+        cam.fade(250, 0, 0, 0);
+
+        // Freeze the player
+        this.player.freeze();
+
+        cam.once("camerafadeoutcomplete", () => {
+          this.musique.stop(); 
+          this.player.destroy();
+          this.scene.restart();
+        
+      });
+      }
+    }
+  }
+  //Setting an easy scoring text
+  ScoreUp(player,luciole){
+    luciole.disableBody(true,true);
+    this.score += 100;
+    this.scoreText.setText('Score : ' + this.score);
+  }
+  //What the game should do if player collides with an ennemy
+  hit(player,ennemy){
+    if (!this.immune){
+      this.isPlayerDead = true;
+
+      const cam = this.cameras.main;
+      cam.shake(100, 0.05);
+
+
+      // Add an effect on death
+      if(this.respawning){
+        this.score -= 200;
+        this.scoreText.setText('Score : ' + this.score);
+        this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
+        this.isPlayerDead = false;
+      }
+      
+      else{
+
+        cam.fade(250, 0, 0, 0);
+
+        // Freeze the player
+        this.player.freeze();
+
+        cam.once("camerafadeoutcomplete", () => {
+          this.musique.stop(); 
+          this.player.destroy();
+          this.scene.restart();
+        
+      });
+      }
+    }
+  }
+  //Checkpoint
+  respawn(player){
+
+    this.respawning = true;
+
+  }
+  //End of the level
+  finishing(player){
+
+      const cam = this.cameras.main;
+
       cam.fade(250, 0, 0, 0);
 
-      // Freeze the player to leave them on screen while fading but remove the marker immediately
+      // Freeze the player
       this.player.freeze();
-      this.marker.destroy();
 
       cam.once("camerafadeoutcomplete", () => {
+        this.isPlayerDead = true;
+        this.musique.stop();
         this.player.destroy();
-        this.scene.restart();
-      });
-    }
+        //Affichage des crédits
+      
+    });
+  
+
   }
 }
