@@ -21,6 +21,7 @@ export default class Level_1 extends Phaser.Scene {
     );
 
     this.load.image("textbox", "./assets/Menu/StoryTelling.png");
+    this.load.image("Edna", "./assets/Menu/EdnaIllu.png");
 
     this.load.image("actionner", "./assets/Objects/UncleGhost.png");
 
@@ -278,6 +279,7 @@ export default class Level_1 extends Phaser.Scene {
       .setScrollFactor(0);
 
     this.textbox = this.add.image(448,224,'textbox').setDepth(2).setScrollFactor(0)
+    this.edna = this.add.image(200,374,'Edna').setDepth(2).setScrollFactor(0)
 
     this.text;
     this.text = this.add.text(370,380,'', { fontSize: 16 }).setDepth(3).setScrollFactor(0);
@@ -359,6 +361,7 @@ export default class Level_1 extends Phaser.Scene {
         }
 
         else if (this.nbClick == 6){
+          this.edna.setVisible(false);
           this.text.setVisible(false);
           this.text.setText('...')
           this.textH.setVisible(false);
@@ -376,6 +379,7 @@ export default class Level_1 extends Phaser.Scene {
     if(this.storyF){
     
       this.physics.pause()
+      this.edna.setVisible(true);
       this.text.setVisible(true);
       this.textH.setVisible(true);
       this.textbox.setVisible(true);
@@ -399,6 +403,7 @@ export default class Level_1 extends Phaser.Scene {
         }
 
         else if (this.nbClickF == 2){
+          this.edna.setVisible(false);
           this.text.setVisible(false);
           this.textH.setVisible(false);
           this.textbox.setVisible(false);
