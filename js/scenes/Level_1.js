@@ -39,10 +39,7 @@ export default class Level_1 extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys()
 
     this.load.audio('Musique', './assets/Audio/Level_1.ogg');
-    this.load.audio('Jump_End', './assets/Audio/Jump_End.ogg');
-    this.load.audio('Jump_Start', './assets/Audio/Jump_Start.ogg');
     this.load.audio('Ambiance', './assets/Audio/Amb_Level_1.ogg');
-    this.load.audio('Footsteps', './assets/Audio/Footsteps_loop.ogg');
   }
 
   create() {
@@ -58,7 +55,6 @@ export default class Level_1 extends Phaser.Scene {
     this.nbClickF = 0;
     this.storyF = false;
     this.teststory = true;
-    this.once = true;
 
     this.skip = this.input.keyboard.addKey('SPACE');
 
@@ -268,17 +264,12 @@ export default class Level_1 extends Phaser.Scene {
 
     //Setting the audio
 
-    this.musique;
-    this.jumpE;
-    this.jumpS;
+    this.musique;  
     this.amb;
-    this.walk;
 
     this.musique = this.sound.add('Musique')
-    this.jumpE = this.sound.add('Jump_End')
-    this.jumpS = this.sound.add('Jump_Start')
     this.amb = this.sound.add('Ambiance')
-    this.walk = this.sound.add('Footsteps')
+    
 
     // Text for player's score or storytelling
     this.score = 0;
@@ -429,23 +420,6 @@ export default class Level_1 extends Phaser.Scene {
 
       };
      
-    }
-
-    if(this.player.sprite.body.velocity.y != 0){
-      this.walk.stop()
-      this.jumpS.play({volume : 0.4})
-    }
-
-    else if(this.player.sprite.body.velocity.x != 0 && this.once){
-      this.jumpS.stop()
-      this.walk.play({volume : 0.4});
-      this.once = false
-    }
-
-    else {
-      this.walk.stop()
-      this.jumpS.stop()
-      this.once = true
     }
     
     //What the game should do if game's over
