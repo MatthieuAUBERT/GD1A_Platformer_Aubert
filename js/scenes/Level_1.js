@@ -309,8 +309,8 @@ export default class Level_1 extends Phaser.Scene {
     //Some simple storytelling in-game
 
     if(this.storytelling){
-      this.amb.play({volume : 0.1, loop: true});
-      this.musique.play({volume : 0.2, loop: true});
+      this.amb.play({volume : 0.0625, loop: true});
+      this.musique.play({volume : 0.125, loop: true});
       this.physics.pause()
       
       

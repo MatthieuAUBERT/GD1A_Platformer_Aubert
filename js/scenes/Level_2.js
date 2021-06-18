@@ -170,7 +170,7 @@ export default class Level_2 extends Phaser.Scene {
     this.player.update();
 
     if(this.storytelling2){
-      this.musique2.play({volume : 0.2, loop: true});
+      this.musique2.play({volume : 0.125, loop: true});
       this.player.sprite.body.moves = false;
       
       
@@ -242,7 +242,7 @@ export default class Level_2 extends Phaser.Scene {
 
     if(this.storyF2){
     
-      this.musique2.stop()
+      
       
       this.player.sprite.body.moves = false;
       
@@ -410,7 +410,8 @@ export default class Level_2 extends Phaser.Scene {
     if (this.teststory2){
       this.storyF2 = true;
       this.teststory2 = false;
-      this.stress.play({volume : 0.2, loop: true});
+      this.stress.play({volume : 0.125, loop: true});
+      this.musique2.stop()
     }
 
   }
