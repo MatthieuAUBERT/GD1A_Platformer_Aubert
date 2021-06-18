@@ -24,6 +24,9 @@ export default class Level_2 extends Phaser.Scene {
     this.load.image("spike", "./assets/TiledLvl2/spike.png");
     this.load.image("tiles", "./assets/TiledLvl2/Tileset2.png");
     this.load.tilemapTiledJSON("map", "./assets/TiledLvl2/Level2.json");
+
+    this.load.audio('Musique2', './assets/Audio/Level_2.ogg');
+    this.load.audio('Musique Stress', './assets/Audio/Level_2_oncle.ogg');
   }
 
   create() {
@@ -132,6 +135,14 @@ export default class Level_2 extends Phaser.Scene {
     //Mouse's marker
     this.marker = new MouseTileMarker(this, map);
 
+    //Music
+
+    this.musique2;  
+    this.stress;
+
+    this.musique2 = this.sound.add('Musique2')
+    this.stress = this.sound.add('Musique Stress')
+
     // Text for score and story
     this.score = 0;
     this.scoreText;
@@ -159,8 +170,8 @@ export default class Level_2 extends Phaser.Scene {
     this.player.update();
 
     if(this.storytelling2){
-      //this.musique.play({volume : 0.1, loop: true});
-      this.physics.pause()
+      this.musique2.play({volume : 0.2, loop: true});
+      this.player.sprite.body.moves = false;
       
       
 
@@ -220,7 +231,7 @@ export default class Level_2 extends Phaser.Scene {
           this.textH2.setVisible(false);
           this.textbox2.setVisible(false);
 
-          this.physics.resume()          
+          this.player.sprite.body.moves = true;          
           this.storytelling2 = false;
 
           }
@@ -231,7 +242,11 @@ export default class Level_2 extends Phaser.Scene {
 
     if(this.storyF2){
     
-      this.physics.pause()
+      this.musique2.stop()
+      
+      this.player.sprite.body.moves = false;
+      
+      
       this.text2.setVisible(true);
       this.textH2.setVisible(true);
       this.textbox2.setVisible(true);
@@ -283,7 +298,7 @@ export default class Level_2 extends Phaser.Scene {
           this.textH2.setVisible(false);
           this.textbox2.setVisible(false);
 
-          this.physics.resume()          
+          this.player.sprite.body.moves = true;          
           this.storyF2 = false;
 
           if (this.spawnE){
@@ -395,6 +410,7 @@ export default class Level_2 extends Phaser.Scene {
     if (this.teststory2){
       this.storyF2 = true;
       this.teststory2 = false;
+      this.stress.play({volume : 0.2, loop: true});
     }
 
   }

@@ -546,6 +546,7 @@ export default class Level_1 extends Phaser.Scene {
       cam.once("camerafadeoutcomplete", () => {
         this.isPlayerDead = true;
         this.musique.stop();
+        this.amb.stop();
         this.player.destroy();
         this.scene.start('level2');
       
