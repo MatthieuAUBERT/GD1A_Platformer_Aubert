@@ -24,6 +24,7 @@ export default class Level_3 extends Phaser.Scene {
     this.load.image("ecranfin", "./assets/Menu/credits.png");
 
     this.load.image("actionner", "./assets/Objects/UncleGhost.png");
+    this.load.image("mur", "./assets/Objects/Wall.png");
 
     this.load.image("luciole", "./assets/Objects/Luciole.png");
 
@@ -38,6 +39,7 @@ export default class Level_3 extends Phaser.Scene {
     //Setting the state of the player
     this.isPlayerDead = false;
     this.immune2 = false;
+    this.phase1 = false;
     this.phase2 = false;
     this.storytelling3 = true;
     this.nbClick3 = 0;
@@ -125,9 +127,14 @@ export default class Level_3 extends Phaser.Scene {
     const MurSp2 = Map.findObject("Trucs", obj => obj.name === "Mur 2");
     const MurSp3 = Map.findObject("Trucs", obj => obj.name === "Mur 3");
 
-    this.mur.create(MurSp.x, MurSp.y, 'mur').setDepth(0);
-    this.mur.create(MurSp2.x, MurSp2.y, 'mur').setDepth(0);
-    this.mur.create(MurSp3.x, MurSp3.y, 'mur').setDepth(0);
+    this.mur.create(MurSp.x, MurSp.y, 'mur').setDepth(0).setVisible(false);
+    this.mur.create(MurSp2.x, MurSp2.y, 'mur').setDepth(0).setVisible(false);
+    this.mur.create(MurSp3.x, MurSp3.y, 'mur').setDepth(0).setVisible(false);
+
+    
+
+
+    //Affichage du boss
 
     //Setting the camera
     this.cameras.main.startFollow(this.player.sprite);
@@ -156,6 +163,14 @@ export default class Level_3 extends Phaser.Scene {
     this.text3 = this.add.text(370,380,'', { fontSize: 16 }).setDepth(3).setScrollFactor(0);
 
     this.textH3 = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3).setScrollFactor(0);
+
+    this.timer = this.time.addEvent({ delay: 5000,repeat:-1 ,callback: function(){if(this.phase1){
+        this.cameras.main.flash()
+        if (!this.physics.world.overlap(this.player.sprite, this.mur)){
+          this.hit(this.player,this.luciole)
+        }
+      
+    }}, callbackScope: this});
     
   }
 
@@ -166,6 +181,9 @@ export default class Level_3 extends Phaser.Scene {
     
     //Setting the USP "Crouch to be invincible"
     this.immune2 = false
+
+    console.log(this.phase1)
+
     if (this.cursors.down.isDown && this.player.sprite.body.blocked.down)
 		{
 			this.immune2 = true;
@@ -185,7 +203,7 @@ export default class Level_3 extends Phaser.Scene {
 
         if(this.nbClick3 == 0){
         
-          this.text3.setText('Where am I ?')
+          this.text3.setText('Where am I now ?')
 
           this.nbClick3 += 1;
         }
@@ -193,7 +211,7 @@ export default class Level_3 extends Phaser.Scene {
 
         else if (this.nbClick3 == 1){
 
-          this.text3.setText('Is that ... a dream ?')
+          this.text3.setText('I have a strange feeling about this')
 
 
           this.nbClick3 += 1;
@@ -201,7 +219,7 @@ export default class Level_3 extends Phaser.Scene {
 
         else if (this.nbClick3 == 2){
 
-          this.text3.setText('Is that because of the other day...when I made it')
+          this.text3.setText('...')
 
 
           this.nbClick3 += 1;
@@ -209,7 +227,7 @@ export default class Level_3 extends Phaser.Scene {
 
         else if (this.nbClick3 == 3){
 
-          this.text3.setText('...')
+          this.text3.setText('Rape...Death...Accident...Your parents...')
 
 
           this.nbClick3 += 1;
@@ -217,7 +235,7 @@ export default class Level_3 extends Phaser.Scene {
 
         else if (this.nbClick3 == 4){
 
-          this.text3.setText('I must face it this time... I will not fear.')
+          this.text3.setText('All... You... Know...')
 
 
           this.nbClick3 += 1;
@@ -225,13 +243,21 @@ export default class Level_3 extends Phaser.Scene {
 
         else if (this.nbClick3 == 5){
 
-          this.text3.setText('(Use Arrows to move and Down to protect)')
+          this.text3.setText('Is ... Despair')
 
 
           this.nbClick3 += 1;
         }
 
         else if (this.nbClick3 == 6){
+
+          this.text3.setText('(Use Arrows to move and Down to protect)')
+
+
+          this.nbClick3 += 1;
+        }
+
+        else if (this.nbClick3 == 7){
           this.text3.setVisible(false);
           this.text3.setText('...')
           this.textH3.setVisible(false);
@@ -239,10 +265,20 @@ export default class Level_3 extends Phaser.Scene {
 
           this.physics.resume()          
           this.storytelling3 = false;
+          this.phase1 = true;
+          
 
           }
 
       };
+
+      
+
+      if (this.phase2){
+        this.phase1 = false
+        //destroy boss
+        //définir son comportement
+      }
      
     }
 
@@ -257,21 +293,53 @@ export default class Level_3 extends Phaser.Scene {
 
         if(this.nbClickF3 == 0){
         
-          this.text3.setText('It seems I forgot something...')
+          this.text3.setText('For once ! Let me in peace !')
 
           this.nbClickF3 += 1;
         }
         
 
-        else if (this.nbClick3 == 1){
+        else if (this.nbClickF3 == 1){
 
-          this.text3.setText('Is that the gloves I saw ?')
+          this.text3.setText('Despair... Death... Faith...')
 
 
           this.nbClickF3 += 1;
         }
 
         else if (this.nbClickF3 == 2){
+
+          this.text3.setText('Now... Fear... Me...')
+
+
+          this.nbClickF3 += 1;
+        }
+
+        else if (this.nbClickF3 == 3){
+
+          this.text3.setText('I almost managed to forget you !')
+
+
+          this.nbClickF3 += 1;
+        }
+
+        else if (this.nbClickF3 == 4){
+
+          this.text3.setText('But it seems I have to face you !')
+
+
+          this.nbClickF3 += 1;
+        }
+
+        else if (this.nbClickF3 == 5){
+
+          this.text3.setText('One last time !!!!')
+
+
+          this.nbClickF3 += 1;
+        }
+
+        else if (this.nbClickF3 == 6){
           this.text3.setVisible(false);
           this.textH3.setVisible(false);
           this.textbox3.setVisible(false);
@@ -362,9 +430,17 @@ export default class Level_3 extends Phaser.Scene {
   //Checkpoint
   respawn(player){
 
+    this.phase1 = false;
+
     this.phase2 = true;
 
+    if (this.teststory3){
+      this.storyF3 = true;
+      this.teststory3 = false;
+    }
+
   }
+
   //End of the level
   finishing(player){
 
@@ -382,7 +458,7 @@ export default class Level_3 extends Phaser.Scene {
         //Affichage des crédits
         cam.fadeIn(3000)
                 this.add.image(448, 224, 'ecranfin').setScrollFactor(0).setDepth(5);
-                this.time.addEvent({delay: 6500, callback: function(){const cam = this.cameras.main;
+                this.time.addEvent({delay: 15000, callback: function(){const cam = this.cameras.main;
                     this.scene.remove()
                     }, callbackScope: this});
       
