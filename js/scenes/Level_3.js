@@ -457,10 +457,7 @@ export default class Level_3 extends Phaser.Scene {
         this.player.destroy();
         //Affichage des crédits
         cam.fadeIn(3000)
-                this.add.image(448, 224, 'ecranfin').setScrollFactor(0).setDepth(5);
-                this.time.addEvent({delay: 15000, callback: function(){const cam = this.cameras.main;
-                    this.scene.remove()
-                    }, callbackScope: this});
+        this.add.image(448, 224, 'ecranfin').setScrollFactor(0).setDepth(5);
       
     });
   
