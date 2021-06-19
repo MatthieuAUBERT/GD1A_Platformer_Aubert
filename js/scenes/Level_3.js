@@ -21,6 +21,7 @@ export default class Level_3 extends Phaser.Scene {
     );
 
     this.load.image("textbox", "./assets/Menu/StoryTelling.png");
+    this.load.image("ecranfin", "./assets/Menu/credits.png");
 
     this.load.image("actionner", "./assets/Objects/UncleGhost.png");
 
@@ -36,15 +37,15 @@ export default class Level_3 extends Phaser.Scene {
   create() {
     //Setting the state of the player
     this.isPlayerDead = false;
-    this.immune = false;
-    this.respawning = false;
-    this.storytelling = true;
-    this.nbClick = 0;
-    this.nbClickF = 0;
-    this.storyF = false;
-    this.teststory = true;
+    this.immune2 = false;
+    this.phase2 = false;
+    this.storytelling3 = true;
+    this.nbClick3 = 0;
+    this.nbClickF3 = 0;
+    this.storyF3 = false;
+    this.teststory3 = true;
 
-    this.skip = this.input.keyboard.addKey('SPACE');
+    this.skip3 = this.input.keyboard.addKey('SPACE');
 
 
     //Setting the map
@@ -54,12 +55,79 @@ export default class Level_3 extends Phaser.Scene {
     const Tiles = Map.addTilesetImage("Tileset3", "Tuiles");
 
 
-    this.groundLayer = Map.createDynamicLayer("Ground", Tiles);
+    this.groundLayer = Map.createDynamicLayer("Calque 2", Tiles);
+
+    Map.createDynamicLayer("Calque 3", Tiles).setDepth(-1);
+    Map.createDynamicLayer("Calque 1", Tiles).setDepth(-3);
+    Map.createDynamicLayer("Calque 1bis", Tiles).setDepth(-2);
     
 
     // Using Spawn Point to get an easy way to spawn player
-    const spawnPoint = Map.findObject("Objects", obj => obj.name === "Spawn");
+    const spawnPoint = Map.findObject("Trucs", obj => obj.name === "Spawn J");
     this.player = new Player(this, spawnPoint.x, spawnPoint.y);
+
+    this.groundLayer.setCollisionByProperty({ collides: true });
+    this.physics.world.addCollider(this.player.sprite, this.groundLayer);
+
+    //Checkpoint and End
+
+    this.CheckPoint = Map.findObject("Trucs", obj => obj.name === "Checkpoint")
+    const Finish = Map.findObject("Trucs", obj => obj.name === "Arrivee")
+
+    this.checkpoint = this.physics.add.group({allowGravity: false,immovable: true})
+    this.end = this.physics.add.group({allowGravity: false,immovable: true})
+
+    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y, 'actionner').setDepth(0).setVisible(false);
+    this.end.create(Finish.x, Finish.y, 'actionner').setDepth(0).setVisible(false);
+
+    this.physics.add.overlap(this.player.sprite, this.checkpoint, this.respawn, null,this);
+    this.physics.add.overlap(this.player.sprite, this.end, this.finishing, null,this);
+
+    //Creating others elements and colliding them if needed
+
+    this.luciole = this.physics.add.group({
+      immovable: true,
+      allowGravity: false
+    });
+    
+    const LucioleSp = Map.findObject("Lucioles", obj => obj.name === "Luciole 1");
+    const LucioleSp2 = Map.findObject("Lucioles", obj => obj.name === "Luciole 2");
+    const LucioleSp3 = Map.findObject("Lucioles", obj => obj.name === "Luciole 3");
+    const LucioleSp4 = Map.findObject("Lucioles", obj => obj.name === "Luciole 4");
+    const LucioleSp5 = Map.findObject("Lucioles", obj => obj.name === "Luciole 5");
+    const LucioleSp6 = Map.findObject("Lucioles", obj => obj.name === "Luciole 6");
+    const LucioleSp7 = Map.findObject("Lucioles", obj => obj.name === "Luciole 7");
+    const LucioleSp8 = Map.findObject("Lucioles", obj => obj.name === "Luciole 8");
+    const LucioleSp9 = Map.findObject("Lucioles", obj => obj.name === "Luciole 9");
+    const LucioleSp10 = Map.findObject("Lucioles", obj => obj.name === "Luciole 10");
+
+    
+    this.luciole.create(LucioleSp.x, LucioleSp.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp2.x, LucioleSp2.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp3.x, LucioleSp3.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp4.x, LucioleSp4.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp5.x, LucioleSp5.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp6.x, LucioleSp6.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp7.x, LucioleSp7.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp8.x, LucioleSp8.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp9.x, LucioleSp9.y, 'luciole').setDepth(0);
+    this.luciole.create(LucioleSp10.x, LucioleSp10.y, 'luciole').setDepth(0);
+
+
+    this.physics.add.overlap(this.player.sprite, this.luciole, this.ScoreUp, null,this);
+
+    this.mur = this.physics.add.group({
+      immovable: true,
+      allowGravity: false
+    });
+
+    const MurSp = Map.findObject("Trucs", obj => obj.name === "Mur 1");
+    const MurSp2 = Map.findObject("Trucs", obj => obj.name === "Mur 2");
+    const MurSp3 = Map.findObject("Trucs", obj => obj.name === "Mur 3");
+
+    this.mur.create(MurSp.x, MurSp.y, 'mur').setDepth(0);
+    this.mur.create(MurSp2.x, MurSp2.y, 'mur').setDepth(0);
+    this.mur.create(MurSp3.x, MurSp3.y, 'mur').setDepth(0);
 
     //Setting the camera
     this.cameras.main.startFollow(this.player.sprite);
@@ -82,12 +150,12 @@ export default class Level_3 extends Phaser.Scene {
       })
       .setScrollFactor(0);
 
-    this.textbox = this.add.image(448,224,'textbox').setDepth(2).setScrollFactor(0)
+    this.textbox3 = this.add.image(448,224,'textbox').setDepth(2).setScrollFactor(0)
 
-    this.text;
-    this.text = this.add.text(370,380,'', { fontSize: 16 }).setDepth(3).setScrollFactor(0);
+    this.text3;
+    this.text3 = this.add.text(370,380,'', { fontSize: 16 }).setDepth(3).setScrollFactor(0);
 
-    this.textH = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3).setScrollFactor(0);
+    this.textH3 = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3).setScrollFactor(0);
     
   }
 
@@ -97,80 +165,80 @@ export default class Level_3 extends Phaser.Scene {
     this.player.update();
     
     //Setting the USP "Crouch to be invincible"
-    this.immune = false
+    this.immune2 = false
     if (this.cursors.down.isDown && this.player.sprite.body.blocked.down)
 		{
-			this.immune = true;
+			this.immune2 = true;
       this.player.sprite.setVelocity(0);
       this.player.sprite.anims.play("player-crouch", true)
 		}
 
     //Some simple storytelling in-game
 
-    if(this.storytelling){
+    if(this.storytelling3){
       //this.musique.play({volume : 0.1, loop: true});
       this.physics.pause()
       
       
 
-      if(Phaser.Input.Keyboard.JustDown(this.skip)){
+      if(Phaser.Input.Keyboard.JustDown(this.skip3)){
 
-        if(this.nbClick == 0){
+        if(this.nbClick3 == 0){
         
-          this.text.setText('Where am I ?')
+          this.text3.setText('Where am I ?')
 
-          this.nbClick += 1;
+          this.nbClick3 += 1;
         }
         
 
-        else if (this.nbClick == 1){
+        else if (this.nbClick3 == 1){
 
-          this.text.setText('Is that ... a dream ?')
+          this.text3.setText('Is that ... a dream ?')
 
 
-          this.nbClick += 1;
+          this.nbClick3 += 1;
         }
 
-        else if (this.nbClick == 2){
+        else if (this.nbClick3 == 2){
 
-          this.text.setText('Is that because of the other day...when I made it')
+          this.text3.setText('Is that because of the other day...when I made it')
 
 
-          this.nbClick += 1;
+          this.nbClick3 += 1;
         }
 
-        else if (this.nbClick == 3){
+        else if (this.nbClick3 == 3){
 
-          this.text.setText('...')
+          this.text3.setText('...')
 
 
-          this.nbClick += 1;
+          this.nbClick3 += 1;
         }
 
-        else if (this.nbClick == 4){
+        else if (this.nbClick3 == 4){
 
-          this.text.setText('I must face it this time... I will not fear.')
+          this.text3.setText('I must face it this time... I will not fear.')
 
 
-          this.nbClick += 1;
+          this.nbClick3 += 1;
         }
 
-        else if (this.nbClick == 5){
+        else if (this.nbClick3 == 5){
 
-          this.text.setText('(Use Arrows to move and Down to protect)')
+          this.text3.setText('(Use Arrows to move and Down to protect)')
 
 
-          this.nbClick += 1;
+          this.nbClick3 += 1;
         }
 
-        else if (this.nbClick == 6){
-          this.text.setVisible(false);
-          this.text.setText('...')
-          this.textH.setVisible(false);
-          this.textbox.setVisible(false);
+        else if (this.nbClick3 == 6){
+          this.text3.setVisible(false);
+          this.text3.setText('...')
+          this.textH3.setVisible(false);
+          this.textbox3.setVisible(false);
 
           this.physics.resume()          
-          this.storytelling = false;
+          this.storytelling3 = false;
 
           }
 
@@ -178,38 +246,38 @@ export default class Level_3 extends Phaser.Scene {
      
     }
 
-    if(this.storyF){
+    if(this.storyF3){
     
       this.physics.pause()
-      this.text.setVisible(true);
-      this.textH.setVisible(true);
-      this.textbox.setVisible(true);
+      this.text3.setVisible(true);
+      this.textH3.setVisible(true);
+      this.textbox3.setVisible(true);
 
-      if(Phaser.Input.Keyboard.JustDown(this.skip)){
+      if(Phaser.Input.Keyboard.JustDown(this.skip3)){
 
-        if(this.nbClickF == 0){
+        if(this.nbClickF3 == 0){
         
-          this.text.setText('It seems I forgot something...')
+          this.text3.setText('It seems I forgot something...')
 
-          this.nbClickF += 1;
+          this.nbClickF3 += 1;
         }
         
 
-        else if (this.nbClickF == 1){
+        else if (this.nbClick3 == 1){
 
-          this.text.setText('Is that the gloves I saw ?')
+          this.text3.setText('Is that the gloves I saw ?')
 
 
-          this.nbClickF += 1;
+          this.nbClickF3 += 1;
         }
 
-        else if (this.nbClickF == 2){
-          this.text.setVisible(false);
-          this.textH.setVisible(false);
-          this.textbox.setVisible(false);
+        else if (this.nbClickF3 == 2){
+          this.text3.setVisible(false);
+          this.textH3.setVisible(false);
+          this.textbox3.setVisible(false);
 
           this.physics.resume()          
-          this.storyF = false;
+          this.storyF3 = false;
 
           }
 
@@ -229,7 +297,7 @@ export default class Level_3 extends Phaser.Scene {
 
 
       // Add an effect on death
-      if(this.respawning){
+      if(this.phase2){
         this.score -= 200;
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
@@ -244,7 +312,7 @@ export default class Level_3 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
-          this.musique.stop(); 
+          //this.musique.stop(); 
           this.player.destroy();
           this.scene.restart();
         
@@ -260,7 +328,7 @@ export default class Level_3 extends Phaser.Scene {
   }
   //What the game should do if player collides with an ennemy
   hit(player,ennemy){
-    if (!this.immune){
+    if (!this.immune2){
       this.isPlayerDead = true;
 
       const cam = this.cameras.main;
@@ -268,7 +336,7 @@ export default class Level_3 extends Phaser.Scene {
 
 
       // Add an effect on death
-      if(this.respawning){
+      if(this.phase2){
         this.score -= 200;
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
@@ -283,7 +351,7 @@ export default class Level_3 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
-          this.musique.stop(); 
+          //this.musique.stop(); 
           this.player.destroy();
           this.scene.restart();
         
@@ -294,7 +362,7 @@ export default class Level_3 extends Phaser.Scene {
   //Checkpoint
   respawn(player){
 
-    this.respawning = true;
+    this.phase2 = true;
 
   }
   //End of the level
@@ -309,9 +377,14 @@ export default class Level_3 extends Phaser.Scene {
 
       cam.once("camerafadeoutcomplete", () => {
         this.isPlayerDead = true;
-        this.musique.stop();
+        //this.musique.stop();
         this.player.destroy();
         //Affichage des crédits
+        cam.fadeIn(3000)
+                this.add.image(448, 224, 'ecranfin').setScrollFactor(0).setDepth(5);
+                this.time.addEvent({delay: 6500, callback: function(){const cam = this.cameras.main;
+                    this.scene.remove()
+                    }, callbackScope: this});
       
     });
   

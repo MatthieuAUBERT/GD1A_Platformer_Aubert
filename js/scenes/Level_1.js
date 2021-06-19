@@ -25,6 +25,8 @@ export default class Level_1 extends Phaser.Scene {
 
     this.load.image("actionner", "./assets/Objects/UncleGhost.png");
 
+    this.load.image("MAGIC", "./assets/Objects/gloves.png");
+
     this.load.image("effets", "./assets/Objects/Effects.png");
     this.load.image("sun", "./assets/Objects/SunEffect.png");
 
@@ -449,6 +451,7 @@ export default class Level_1 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
+          this.amb.stop(); 
           this.musique.stop(); 
           this.player.destroy();
           this.scene.restart();
@@ -488,6 +491,7 @@ export default class Level_1 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
+          this.amb.stop(); 
           this.musique.stop(); 
           this.player.destroy();
           this.scene.restart();

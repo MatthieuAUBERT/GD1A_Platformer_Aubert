@@ -27,6 +27,9 @@ export default class Level_2 extends Phaser.Scene {
 
     this.load.audio('Musique2', './assets/Audio/Level_2.ogg');
     this.load.audio('Musique Stress', './assets/Audio/Level_2_oncle.ogg');
+
+    this.load.image("Edna", "./assets/Menu/EdnaIllu.png");
+    this.load.image("Oncle", "./assets/Menu/UncleIllu.png");
   }
 
   create() {
@@ -160,6 +163,9 @@ export default class Level_2 extends Phaser.Scene {
       this.text2 = this.add.text(370,380,'', { fontSize: 16 }).setDepth(3).setScrollFactor(0);
   
       this.textH2 = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3).setScrollFactor(0);
+
+      this.edna = this.add.image(200,374,'Edna').setDepth(2).setScrollFactor(0)
+      this.illuoncle = this.add.image(200,374,'Oncle').setDepth(2).setScrollFactor(0).setVisible(false)
       
   }
 
@@ -226,6 +232,7 @@ export default class Level_2 extends Phaser.Scene {
         }
 
         else if (this.nbClick2 == 6){
+          this.edna.setVisible(false);
           this.text2.setVisible(false);
           this.text2.setText('...')
           this.textH2.setVisible(false);
@@ -254,6 +261,7 @@ export default class Level_2 extends Phaser.Scene {
       if(Phaser.Input.Keyboard.JustDown(this.skip2)){
 
         if(this.nbClickF2 == 0){
+          this.illuoncle.setVisible(true);
         
           this.text2.setText("I'm glad you're here, my little.")
 
@@ -263,6 +271,9 @@ export default class Level_2 extends Phaser.Scene {
 
         else if (this.nbClickF2 == 1){
 
+          this.illuoncle.setVisible(false);
+          this.edna.setVisible(true);
+
           this.text2.setText("Uncle ?! Be gone ! I don't want to see you !")
 
 
@@ -270,6 +281,9 @@ export default class Level_2 extends Phaser.Scene {
         }
 
         else if (this.nbClickF2 == 2){
+
+          this.illuoncle.setVisible(true);
+          this.edna.setVisible(false);
 
           this.text2.setText("Why did you perform this rituel so ?")
 
@@ -279,6 +293,9 @@ export default class Level_2 extends Phaser.Scene {
 
         else if (this.nbClickF2 == 3){
 
+          this.illuoncle.setVisible(false);
+          this.edna.setVisible(true);
+
           this.text2.setText("Surely not for the beast you are !")
 
 
@@ -287,6 +304,9 @@ export default class Level_2 extends Phaser.Scene {
 
         else if (this.nbClickF2 == 4){
 
+          this.illuoncle.setVisible(true);
+          this.edna.setVisible(false);
+
           this.text2.setText("SO AM I ! Prepare yourself !")
 
 
@@ -294,6 +314,7 @@ export default class Level_2 extends Phaser.Scene {
         }
 
         else if (this.nbClickF2 == 5){
+          this.illuoncle.setVisible(false);
           this.text2.setVisible(false);
           this.textH2.setVisible(false);
           this.textbox2.setVisible(false);
@@ -428,6 +449,8 @@ export default class Level_2 extends Phaser.Scene {
     cam.once("camerafadeoutcomplete", () => {
       this.isPlayerDead = true;
       this.player.destroy();
+      this.stress.stop()
+      this.musique2.stop()
       this.scene.start('level3');
       
     });
