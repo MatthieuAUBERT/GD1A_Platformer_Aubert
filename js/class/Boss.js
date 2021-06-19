@@ -14,7 +14,7 @@ export default class Boss extends Phaser.GameObjects.Sprite{
         let percentX = vectorX/(vectorX+vectorY);
         let percentY = vectorY/(vectorX+vectorY);
 
-        this.body.setVelocity((80 *percentX)*((player.x-this.x)/vectorX), (80 *percentY)*((player.y-this.y)/vectorY));
+        this.body.setVelocity((400 *percentX)*((player.x-this.x)/vectorX), (400 *percentY)*((player.y-this.y)/vectorY));
         return this.x;
     }
 

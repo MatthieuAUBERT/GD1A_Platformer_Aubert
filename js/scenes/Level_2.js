@@ -262,6 +262,7 @@ export default class Level_2 extends Phaser.Scene {
 
         if(this.nbClickF2 == 0){
           this.illuoncle.setVisible(true);
+          cam.shake(100, 0.05);
         
           this.text2.setText("I'm glad you're here, my little.")
 
@@ -284,6 +285,7 @@ export default class Level_2 extends Phaser.Scene {
 
           this.illuoncle.setVisible(true);
           this.edna.setVisible(false);
+          cam.shake(100, 0.05);
 
           this.text2.setText("Why did you perform this rituel so ?")
 
@@ -306,6 +308,7 @@ export default class Level_2 extends Phaser.Scene {
 
           this.illuoncle.setVisible(true);
           this.edna.setVisible(false);
+          cam.shake(100, 0.05);
 
           this.text2.setText("SO AM I ! Prepare yourself !")
 

@@ -1,3 +1,4 @@
+import Boss from "../class/Boss.js";
 import Player from "../class/player.js";
 
 //First Level including : Text Printing Word by Word / Simple Platformer / Invincibility Power / Key to unlock the next level / 2 different ennemies / Tiled Map
@@ -23,6 +24,9 @@ export default class Level_3 extends Phaser.Scene {
     this.load.image("textbox", "./assets/Menu/StoryTelling.png");
     this.load.image("ecranfin", "./assets/Menu/credits.png");
 
+
+    this.load.image("BossNormal", "./assets/Objects/Death.png");
+    this.load.image("BossFond", "./assets/Objects/BossFond.png");
     this.load.image("actionner", "./assets/Objects/UncleGhost.png");
     this.load.image("mur", "./assets/Objects/Wall.png");
 
@@ -46,6 +50,7 @@ export default class Level_3 extends Phaser.Scene {
     this.nbClickF3 = 0;
     this.storyF3 = false;
     this.teststory3 = true;
+    this.phase2check = false;
 
     this.skip3 = this.input.keyboard.addKey('SPACE');
 
@@ -59,9 +64,9 @@ export default class Level_3 extends Phaser.Scene {
 
     this.groundLayer = Map.createDynamicLayer("Calque 2", Tiles);
 
-    Map.createDynamicLayer("Calque 3", Tiles).setDepth(-1);
-    Map.createDynamicLayer("Calque 1", Tiles).setDepth(-3);
-    Map.createDynamicLayer("Calque 1bis", Tiles).setDepth(-2);
+    Map.createDynamicLayer("Calque 3", Tiles).setDepth(-2);
+    Map.createDynamicLayer("Calque 1", Tiles).setDepth(-4);
+    Map.createDynamicLayer("Calque 1bis", Tiles).setDepth(-3);
     
 
     // Using Spawn Point to get an easy way to spawn player
@@ -136,6 +141,11 @@ export default class Level_3 extends Phaser.Scene {
 
     //Affichage du boss
 
+    this.bossfond = this.add.image(448,224,"BossFond").setScrollFactor(0).setDepth(-1);
+
+    this.boss = this.physics.add.group({allowGravity: false});
+    this.physics.add.overlap(this.player.sprite, this.boss, this.hit, null, this);
+
     //Setting the camera
     this.cameras.main.startFollow(this.player.sprite);
     this.cameras.main.setBounds(0, 0, Map.widthInPixels, Map.heightInPixels);
@@ -171,6 +181,8 @@ export default class Level_3 extends Phaser.Scene {
         }
       
     }}, callbackScope: this});
+
+    
     
   }
 
@@ -181,8 +193,6 @@ export default class Level_3 extends Phaser.Scene {
     
     //Setting the USP "Crouch to be invincible"
     this.immune2 = false
-
-    console.log(this.phase1)
 
     if (this.cursors.down.isDown && this.player.sprite.body.blocked.down)
 		{
@@ -274,11 +284,9 @@ export default class Level_3 extends Phaser.Scene {
 
       
 
-      if (this.phase2){
-        this.phase1 = false
-        //destroy boss
-        //définir son comportement
-      }
+      
+
+   
      
     }
 
@@ -346,11 +354,30 @@ export default class Level_3 extends Phaser.Scene {
 
           this.physics.resume()          
           this.storyF3 = false;
+          
+
+          if (this.phase2){
+            this.phase2 = false;
+            this.phase2check = true;
+            this.bossfond.setVisible(false)
+            //2402,320
+            this.bos = new Boss(this,2402,320,'BossNormal').setDepth(0);
+            //définir son comportement
+          }
 
           }
 
       };
      
+    }
+
+    for(var i = 0; i < this.boss.getChildren().length; i++){
+      var bosse = this.boss.getChildren()[i];
+      if(this.cursors.up.isDown){
+        bosse.dash(this.player.sprite);
+        this.time.addEvent({ delay: 1000,callback: function(){this.bos.setPosition(this.player.sprite.body.x + 300, 320);}, callbackScope: this})
+      }
+      
     }
     
     //What the game should do if game's over
@@ -365,7 +392,7 @@ export default class Level_3 extends Phaser.Scene {
 
 
       // Add an effect on death
-      if(this.phase2){
+      if(this.phase2check){
         this.score -= 200;
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
@@ -404,7 +431,7 @@ export default class Level_3 extends Phaser.Scene {
 
 
       // Add an effect on death
-      if(this.phase2){
+      if(this.phase2check){
         this.score -= 200;
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
@@ -432,9 +459,8 @@ export default class Level_3 extends Phaser.Scene {
 
     this.phase1 = false;
 
-    this.phase2 = true;
-
     if (this.teststory3){
+      this.phase2 = true;
       this.storyF3 = true;
       this.teststory3 = false;
     }
