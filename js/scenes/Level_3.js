@@ -223,7 +223,7 @@ export default class Level_3 extends Phaser.Scene {
 
     if(this.storytelling3){
       
-      this.musique3.play({volume : 0.125, loop: true});
+      
       this.player.sprite.body.moves = false;
       
       
@@ -295,6 +295,7 @@ export default class Level_3 extends Phaser.Scene {
           this.player.sprite.body.moves = true;        
           this.storytelling3 = false;
           this.phase1 = true;
+          this.musique3.play({volume : 0.125, loop: true});
           this.amb3.play({volume : 0.0625, loop: true});
           
 
