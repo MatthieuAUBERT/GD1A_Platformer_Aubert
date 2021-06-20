@@ -197,7 +197,7 @@ export default class Level_2 extends Phaser.Scene {
 
         else if (this.nbClick2 == 1){
 
-          this.text2.setText('I shall use them to avoid any danger.')
+          this.text2.setText('I can use them to avoid any danger.')
 
 
           this.nbClick2 += 1;
