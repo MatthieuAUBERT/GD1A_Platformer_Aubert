@@ -213,7 +213,7 @@ export default class Level_2 extends Phaser.Scene {
 
         else if (this.nbClick2 == 3){
 
-          this.text2.setText('I will not stay any longer...')
+          this.text2.setText("I won't not stay here any longer...")
 
 
           this.nbClick2 += 1;
@@ -221,7 +221,7 @@ export default class Level_2 extends Phaser.Scene {
 
         else if (this.nbClick2 == 4){
 
-          this.text2.setText('I expect that is not what I think.')
+          this.text2.setText("I hope it's not what I think it is.")
 
 
           this.nbClick2 += 1;
