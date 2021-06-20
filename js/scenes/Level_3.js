@@ -415,6 +415,7 @@ export default class Level_3 extends Phaser.Scene {
 
       // Add an effect on death
       if(this.phase2check){
+        this.musB.stop()
         this.score -= 200;
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
@@ -455,6 +456,7 @@ export default class Level_3 extends Phaser.Scene {
 
       // Add an effect on death
       if(this.phase2check){
+        this.musB.stop()
         this.score -= 200;
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
