@@ -26,14 +26,20 @@ export default class Level_3 extends Phaser.Scene {
 
 
     this.load.image("BossNormal", "./assets/Objects/Death.png");
-    this.load.image("BossFond", "./assets/Objects/BossFond.png");
+    this.load.image("BossFond", "./assets/Objects/DeathFond.png");
+    this.load.image("LFX", "./assets/Objects/EffetLumi.png");
     this.load.image("actionner", "./assets/Objects/UncleGhost.png");
+    this.load.image("ending", "./assets/Objects/Finish.png");
     this.load.image("mur", "./assets/Objects/Wall.png");
 
     this.load.image("luciole", "./assets/Objects/Luciole.png");
 
     this.load.image("Tuiles", "./assets/TiledLvl3/Tileset3.png");
     this.load.tilemapTiledJSON("Boss", "./assets/TiledLvl3/Map3.json");
+
+    this.load.audio('Musique3', './assets/Audio/Level_3.ogg');
+    this.load.audio('Musique Boss', './assets/Audio/Level_3_Death.ogg');
+    this.load.audio('Ambiance', './assets/Audio/Amb_Level_3.ogg');
 
     this.cursors = this.input.keyboard.createCursorKeys()
 
@@ -85,7 +91,7 @@ export default class Level_3 extends Phaser.Scene {
     this.end = this.physics.add.group({allowGravity: false,immovable: true})
 
     this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y, 'actionner').setDepth(0).setVisible(false);
-    this.end.create(Finish.x, Finish.y, 'actionner').setDepth(0).setVisible(false);
+    this.end.create(Finish.x+20, Finish.y+2, 'ending').setDepth(0);
 
     this.physics.add.overlap(this.player.sprite, this.checkpoint, this.respawn, null,this);
     this.physics.add.overlap(this.player.sprite, this.end, this.finishing, null,this);
@@ -141,7 +147,7 @@ export default class Level_3 extends Phaser.Scene {
 
     //Affichage du boss
 
-    this.bossfond = this.add.image(448,224,"BossFond").setScrollFactor(0).setDepth(-1);
+    this.bossfond = this.add.image(448,224,"BossFond").setScrollFactor(0.2).setDepth(-3);
 
     this.boss = this.physics.add.group({allowGravity: false});
     this.physics.add.overlap(this.player.sprite, this.boss, this.hit, null, this);
@@ -150,11 +156,16 @@ export default class Level_3 extends Phaser.Scene {
     this.cameras.main.startFollow(this.player.sprite);
     this.cameras.main.setBounds(0, 0, Map.widthInPixels, Map.heightInPixels);
 
-    //Setting the audio
+    //Music
 
-    //this.musique;
+    this.musique3;  
+    this.musB;
+    this.amb3;
 
-    //this.musique = this.sound.add('Musique')
+    this.musique3 = this.sound.add('Musique3')
+    this.musB = this.sound.add('Musique Boss')
+    this.amb3 = this.sound.add('Ambiance')
+
 
     // Texte
     this.score = 0;
@@ -175,10 +186,17 @@ export default class Level_3 extends Phaser.Scene {
     this.textH3 = this.add.text(525,420,'Press SPACE to continue', { fontSize: 12 }).setDepth(3).setScrollFactor(0);
 
     this.timer = this.time.addEvent({ delay: 5000,repeat:-1 ,callback: function(){if(this.phase1){
-        this.cameras.main.flash()
-        if (!this.physics.world.overlap(this.player.sprite, this.mur)){
-          this.hit(this.player,this.luciole)
-        }
+        this.effet = this.add.image (448,224,'LFX').setDepth(-3).setVisible(true).setScrollFactor(0.2)
+
+        this.time.addEvent({delay:1000,callback:function(){this.cameras.main.flash()
+
+          if (!this.physics.world.overlap(this.player.sprite, this.mur)){
+            this.hit(this.player,this.luciole)
+          }
+
+          this.effet.setVisible(false)}
+          , callbackScope: this})
+        
       
     }}, callbackScope: this});
 
@@ -204,7 +222,8 @@ export default class Level_3 extends Phaser.Scene {
     //Some simple storytelling in-game
 
     if(this.storytelling3){
-      //this.musique.play({volume : 0.1, loop: true});
+      this.amb3.play({volume : 0.0625, loop: true});
+      this.musique3.play({volume : 0.125, loop: true});
       this.physics.pause()
       
       
@@ -293,6 +312,7 @@ export default class Level_3 extends Phaser.Scene {
     if(this.storyF3){
     
       this.physics.pause()
+      
       this.text3.setVisible(true);
       this.textH3.setVisible(true);
       this.textbox3.setVisible(true);
@@ -407,7 +427,8 @@ export default class Level_3 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
-          //this.musique.stop(); 
+          this.amb3.stop();
+          this.musique3.stop()
           this.player.destroy();
           this.scene.restart();
         
@@ -446,7 +467,8 @@ export default class Level_3 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
-          //this.musique.stop(); 
+          this.amb3.stop();
+          this.musique3.stop() 
           this.player.destroy();
           this.scene.restart();
         
@@ -462,6 +484,8 @@ export default class Level_3 extends Phaser.Scene {
     if (this.teststory3){
       this.phase2 = true;
       this.storyF3 = true;
+      this.musique3.stop()
+      this.musB.play({volume : 0.125, loop: true});
       this.teststory3 = false;
     }
 
@@ -479,7 +503,8 @@ export default class Level_3 extends Phaser.Scene {
 
       cam.once("camerafadeoutcomplete", () => {
         this.isPlayerDead = true;
-        //this.musique.stop();
+        this.musique3.stop()
+        this.musB.stop()
         this.player.destroy();
         //Affichage des crédits
         cam.fadeIn(3000)

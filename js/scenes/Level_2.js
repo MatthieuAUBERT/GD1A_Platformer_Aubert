@@ -27,6 +27,7 @@ export default class Level_2 extends Phaser.Scene {
 
     this.load.audio('Musique2', './assets/Audio/Level_2.ogg');
     this.load.audio('Musique Stress', './assets/Audio/Level_2_oncle.ogg');
+    this.load.audio('Ambiance', './assets/Audio/Amb_level_2.ogg');
 
     this.load.image("Edna", "./assets/Menu/EdnaIllu.png");
     this.load.image("Oncle", "./assets/Menu/UncleIllu.png");
@@ -142,9 +143,11 @@ export default class Level_2 extends Phaser.Scene {
 
     this.musique2;  
     this.stress;
+    this.amb2;
 
     this.musique2 = this.sound.add('Musique2')
     this.stress = this.sound.add('Musique Stress')
+    this.amb2 = this.sound.add('Ambiance')
 
     // Text for score and story
     this.score = 0;
@@ -176,6 +179,7 @@ export default class Level_2 extends Phaser.Scene {
     this.player.update();
 
     if(this.storytelling2){
+      this.amb2.play({volume : 0.0625, loop: true});
       this.musique2.play({volume : 0.125, loop: true});
       this.player.sprite.body.moves = false;
       
@@ -262,6 +266,7 @@ export default class Level_2 extends Phaser.Scene {
 
         if(this.nbClickF2 == 0){
           this.illuoncle.setVisible(true);
+          const cam = this.cameras.main;
           cam.shake(100, 0.05);
         
           this.text2.setText("I'm glad you're here, my little.")
@@ -285,6 +290,7 @@ export default class Level_2 extends Phaser.Scene {
 
           this.illuoncle.setVisible(true);
           this.edna.setVisible(false);
+          const cam = this.cameras.main;
           cam.shake(100, 0.05);
 
           this.text2.setText("Why did you perform this rituel so ?")
@@ -308,6 +314,7 @@ export default class Level_2 extends Phaser.Scene {
 
           this.illuoncle.setVisible(true);
           this.edna.setVisible(false);
+          const cam = this.cameras.main;
           cam.shake(100, 0.05);
 
           this.text2.setText("SO AM I ! Prepare yourself !")
@@ -379,6 +386,8 @@ export default class Level_2 extends Phaser.Scene {
         this.player.freeze();
 
         cam.once("camerafadeoutcomplete", () => {
+          this.amb2.stop();
+          this.musique2.stop()
           this.player.destroy();
           this.scene.restart();
         
@@ -418,6 +427,8 @@ export default class Level_2 extends Phaser.Scene {
       this.player.freeze();
 
       cam.once("camerafadeoutcomplete", () => {
+        this.amb2.stop();
+        this.musique2.stop()
         this.player.destroy();
         this.scene.restart();
         
