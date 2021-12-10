@@ -36,11 +36,11 @@ export default class Menu extends Phaser.Scene {
             this.scene.start('level1');
         })
 
-        commandButton.setInteractive();
+        /*commandButton.setInteractive();
 
         commandButton.on("pointerup", () => {
-            this.scene.start('level3');
-        })
+            
+        })*/
 
     }
 }

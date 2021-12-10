@@ -91,8 +91,8 @@ export default class Level_1 extends Phaser.Scene {
     this.actionnerI = this.physics.add.group({allowGravity: false,immovable: true})
     this.actionnerII = this.physics.add.group({allowGravity: false,immovable: true})
 
-    this.actionnerI.create(Actionner1.x, Actionner1.y, 'actionner').setDepth(0).setVisible(false);
-    this.actionnerII.create(Actionner2.x, Actionner2.y, 'actionner').setDepth(0).setVisible(false);
+    this.actionnerI.create(Actionner1.x, Actionner1.y-100, 'actionner').setDepth(0).setVisible(false).setSize(32, 300);
+    this.actionnerII.create(Actionner2.x, Actionner2.y-100, 'actionner').setDepth(0).setVisible(false).setSize(32, 300);
 
     this.physics.add.overlap(this.player.sprite, this.actionnerI, this.spawn1, null,this);
     this.physics.add.overlap(this.player.sprite, this.actionnerII, this.spawn2, null,this);
@@ -101,8 +101,8 @@ export default class Level_1 extends Phaser.Scene {
     this.checkpoint = this.physics.add.group({allowGravity: false,immovable: true})
     this.end = this.physics.add.group({allowGravity: false,immovable: true})
 
-    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y, 'actionner').setDepth(0).setVisible(false);
-    this.end.create(Finish.x, Finish.y, 'actionner').setDepth(0).setVisible(false);
+    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y-100, 'actionner').setDepth(0).setVisible(false).setSize(32, 300);
+    this.end.create(Finish.x, Finish.y-100, 'actionner').setDepth(0).setVisible(false).setSize(32, 300);
 
     this.physics.add.overlap(this.player.sprite, this.checkpoint, this.respawn, null,this);
     this.physics.add.overlap(this.player.sprite, this.end, this.finishing, null,this);
@@ -111,6 +111,17 @@ export default class Level_1 extends Phaser.Scene {
     // Collide the player with Tiled Layers
     this.groundLayer.setCollisionByProperty({ collides: true });
     this.physics.world.addCollider(this.player.sprite, this.groundLayer);
+
+    //Creating walls
+
+    this.walls = this.physics.add.group({allowGravity: false,immovable: true})
+    this.walls2 = this.physics.add.group({allowGravity: false,immovable: true})
+
+    this.walls.create(1, 200, 'actionner').setDepth(0).setVisible(false).setSize(1, 500);
+    this.walls2.create(Map.widthInPixels, Map.heightInPixels-200, 'actionner').setDepth(0).setVisible(false).setSize(1, 500);
+
+    this.physics.world.addCollider(this.player.sprite, this.walls);
+    this.physics.world.addCollider(this.player.sprite, this.walls2);
 
 
     // Spawning the ennemies and define their behaviour
@@ -441,6 +452,8 @@ export default class Level_1 extends Phaser.Scene {
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
         this.isPlayerDead = false;
+        this.spawn = true;
+        this.spawnO = true;
       }
       
       else{
@@ -481,6 +494,8 @@ export default class Level_1 extends Phaser.Scene {
         this.scoreText.setText('Score : ' + this.score);
         this.player.sprite.setPosition(this.CheckPoint.x,this.CheckPoint.y-20);
         this.isPlayerDead = false;
+        this.spawn = true;
+        this.spawnO = true;
       }
       
       else{

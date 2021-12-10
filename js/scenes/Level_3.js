@@ -90,7 +90,7 @@ export default class Level_3 extends Phaser.Scene {
     this.checkpoint = this.physics.add.group({allowGravity: false,immovable: true})
     this.end = this.physics.add.group({allowGravity: false,immovable: true})
 
-    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y, 'actionner').setDepth(0).setVisible(false);
+    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y-100, 'actionner').setDepth(0).setVisible(false).setSize(32, 300);
     this.end.create(Finish.x+20, Finish.y+2, 'ending').setDepth(0);
 
     this.physics.add.overlap(this.player.sprite, this.checkpoint, this.respawn, null,this);
@@ -141,6 +141,16 @@ export default class Level_3 extends Phaser.Scene {
     this.mur.create(MurSp.x, MurSp.y, 'mur').setDepth(0).setVisible(false);
     this.mur.create(MurSp2.x, MurSp2.y, 'mur').setDepth(0).setVisible(false);
     this.mur.create(MurSp3.x, MurSp3.y, 'mur').setDepth(0).setVisible(false);
+
+    //Walls
+    this.walls = this.physics.add.group({allowGravity: false,immovable: true})
+    this.walls2 = this.physics.add.group({allowGravity: false,immovable: true})
+
+    this.walls.create(1, 200, 'actionner').setDepth(0).setVisible(false).setSize(1, 500);
+    this.walls2.create(Map.widthInPixels, Map.heightInPixels-200, 'actionner').setDepth(0).setVisible(false).setSize(1, 500);
+
+    this.physics.world.addCollider(this.player.sprite, this.walls);
+    this.physics.world.addCollider(this.player.sprite, this.walls2);
 
     
 

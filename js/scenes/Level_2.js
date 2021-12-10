@@ -64,8 +64,8 @@ export default class Level_2 extends Phaser.Scene {
     this.checkpoint = this.physics.add.group({allowGravity: false,immovable: true})
     this.end = this.physics.add.group({allowGravity: false,immovable: true})
 
-    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y, 'UncleG').setDepth(0).setVisible(false);
-    this.end.create(Finish.x, Finish.y, 'UncleG').setDepth(0).setVisible(false);
+    this.checkpoint.create(this.CheckPoint.x, this.CheckPoint.y-100, 'UncleG').setDepth(0).setVisible(false).setSize(32, 300);
+    this.end.create(Finish.x, Finish.y-100, 'UncleG').setDepth(0).setVisible(false).setSize(32, 300);
 
     this.physics.add.overlap(this.player.sprite, this.checkpoint, this.respawnAndMonster, null,this);
     this.physics.add.overlap(this.player.sprite, this.end, this.finishing, null,this);
@@ -73,6 +73,16 @@ export default class Level_2 extends Phaser.Scene {
     // Colliders
     this.groundLayer.setCollisionByProperty({ collides: true });
     this.physics.world.addCollider(this.player.sprite, this.groundLayer);
+
+    //Walls
+    this.walls = this.physics.add.group({allowGravity: false,immovable: true})
+    this.walls2 = this.physics.add.group({allowGravity: false,immovable: true})
+
+    this.walls.create(1, 200, 'UncleG').setDepth(0).setVisible(false).setSize(1, 500);
+    this.walls2.create(map.widthInPixels, map.heightInPixels-200, 'UncleG').setDepth(0).setVisible(false).setSize(1, 500);
+
+    this.physics.world.addCollider(this.player.sprite, this.walls);
+    this.physics.world.addCollider(this.player.sprite, this.walls2);
 
     //Ennemies
     this.actionner = map.findObject("Objects", obj => obj.name === "Spawn Monstre")
